@@ -456,3 +456,90 @@ body {
         grid-template-columns: 1fr 1fr;
     }
 }
+
+/* =========================================
+   ENLACE DASHBOARD - EFECTO DORADO
+   ========================================= */
+
+.navbar nav .admin-link {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+
+    color: #ffffff;
+    font-weight: 600;
+
+    transition:
+        color 0.3s ease,
+        text-shadow 0.3s ease;
+
+    animation: dashboardColor 3s ease-in-out infinite;
+}
+
+/* Cambio suave entre blanco y amarillo */
+@keyframes dashboardColor {
+    0%,
+    100% {
+        color: #ffffff;
+        text-shadow: none;
+    }
+
+    50% {
+        color: #f5c542;
+        text-shadow: 0 0 8px rgba(245, 197, 66, 0.45);
+    }
+}
+
+/* Luz que atraviesa el texto */
+.navbar nav .admin-link::after {
+    content: "";
+    position: absolute;
+
+    top: -20%;
+    left: -60%;
+
+    width: 35%;
+    height: 140%;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.85),
+        transparent
+    );
+
+    transform: skewX(-20deg);
+
+    animation: dashboardShine 3s ease-in-out infinite;
+}
+
+@keyframes dashboardShine {
+    0%,
+    35% {
+        left: -60%;
+        opacity: 0;
+    }
+
+    45% {
+        opacity: 1;
+    }
+
+    65% {
+        left: 120%;
+        opacity: 1;
+    }
+
+    66%,
+    100% {
+        left: 120%;
+        opacity: 0;
+    }
+}
+
+/* Hover */
+.navbar nav .admin-link:hover {
+    color: #ffd54a;
+    text-shadow:
+        0 0 8px rgba(255, 213, 74, 0.6),
+        0 0 16px rgba(255, 213, 74, 0.25);
+}
