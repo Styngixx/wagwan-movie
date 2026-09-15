@@ -110,13 +110,18 @@ if (adminLoginForm) {
 
             if (adminValido) {
 
-                // Guardamos temporalmente que el administrador inició sesión
+                // Guardamos la sesión del administrador
                 localStorage.setItem('adminLogged', 'true');
 
                 adminLoginError.style.color = '#4ade80';
                 adminLoginError.textContent = 'Acceso correcto';
 
-                console.log('Administrador autenticado correctamente');
+                // Esperamos un momento y entramos al dashboard
+                setTimeout(() => {
+                    window.location.href = 'public/pages/admin.html';
+                }, 800);
+
+            
 
             } else {
 

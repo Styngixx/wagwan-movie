@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard Administrador - WAGWAN</title>
+
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <!-- =========================
+             SIDEBAR
+        ========================== -->
+        <aside class="admin-sidebar">
+
+            <div class="admin-logo">
+                <span class="play-icon">▶</span>
+                <span>WAGWAN</span>
+            </div>
+
+            <nav class="admin-menu">
+
+                <a href="#" class="admin-menu-link active">
+                    Dashboard
+                </a>
+
+                <a href="#peliculas" class="admin-menu-link">
+                    Películas
+                </a>
+
+                <a href="../../index.html" class="admin-menu-link">
+                    Ver sitio
+                </a>
+
+            </nav>
+
+            <button class="admin-logout" id="adminLogout">
+                Cerrar sesión
+            </button>
+
+        </aside>
+
+
+        <!-- =========================
+             CONTENIDO PRINCIPAL
+        ========================== -->
+        <main class="admin-main">
+
+            <!-- HEADER -->
+            <header class="admin-header">
+
+                <div>
+                    <h1>Panel de Administración</h1>
+
+                    <p>
+                        Gestiona las películas disponibles en WAGWAN.
+                    </p>
+                </div>
+
+                <div class="admin-user">
+                    Administrador
+                </div>
+
+            </header>
+
+
+            <!-- =========================
+                 ESTADÍSTICAS
+            ========================== -->
+            <section class="admin-stats">
+
+                <div class="stat-card">
+                    <span class="stat-title">
+                        Total películas
+                    </span>
+
+                    <strong class="stat-number">
+                        0
+                    </strong>
+                </div>
+
+
+                <div class="stat-card">
+                    <span class="stat-title">
+                        Géneros
+                    </span>
+
+                    <strong class="stat-number">
+                        0
+                    </strong>
+                </div>
+
+
+                <div class="stat-card">
+                    <span class="stat-title">
+                        Estrenos 2026
+                    </span>
+
+                    <strong class="stat-number">
+                        0
+                    </strong>
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 GESTIÓN DE PELÍCULAS
+            ========================== -->
+            <section
+                class="movies-management"
+                id="peliculas"
+            >
+
+                <div class="section-title">
+
+                    <div>
+                        <h2>Gestión de Películas</h2>
+
+                        <p>
+                            Agrega, modifica o elimina películas.
+                        </p>
+                    </div>
+
+                    <button
+                        class="btn-add-movie"
+                        id="btnAddMovie"
+                    >
+                        + Agregar película
+                    </button>
+
+                </div>
+
+
+                <!-- TABLA -->
+                <div class="movies-table-container">
+
+                    <table class="movies-table">
+
+                        <thead>
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Título</th>
+                                <th>Género</th>
+                                <th>Año</th>
+                                <th>Duración</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="moviesTableBody">
+
+                            <!-- Las películas aparecerán aquí -->
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="../js/admin.js"></script>
+
+</body>
+
+</html>
