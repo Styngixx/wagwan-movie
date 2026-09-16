@@ -46,8 +46,10 @@ body {
    ========================================= */
 .navbar {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
+    gap: 12px;
     padding: 15px 40px;
     background-color: var(--bg-main);
     position: sticky;
@@ -66,7 +68,10 @@ body {
 
 .navbar nav {
     display: flex;
+    flex: 1;
+    flex-wrap: wrap;
     gap: 20px;
+    justify-content: center;
 }
 
 .navbar nav a {
@@ -471,6 +476,79 @@ body {
 }
 
 /* =========================================
+   PÁGINA DE FAVORITOS
+   ========================================= */
+.favorites-page {
+    max-width: 1600px;
+    min-height: calc(100vh - 180px);
+    margin: 0 auto;
+    padding: 45px 40px;
+}
+
+.favorites-heading {
+    margin-bottom: 30px;
+}
+
+.favorites-heading h1 {
+    font-size: 2.2rem;
+    margin: 8px 0 10px;
+}
+
+.favorites-heading p,
+.empty-favorites p {
+    color: var(--text-muted);
+}
+
+.favorites-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.favorite-card {
+    min-width: 0;
+}
+
+.remove-favorite {
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px 10px;
+    border: 1px solid var(--badge-bg);
+    border-radius: 4px;
+    background-color: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.78rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.remove-favorite:hover {
+    background-color: rgba(240, 90, 103, 0.12);
+    color: #f05a67;
+}
+
+.empty-favorites {
+    padding: 80px 20px;
+    text-align: center;
+    background-color: var(--card-bg);
+    border-radius: 12px;
+}
+
+.empty-favorites-icon {
+    color: var(--text-muted);
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.empty-favorites h2 {
+    margin-bottom: 10px;
+}
+
+.empty-favorites .btn-primary {
+    display: inline-flex;
+    margin-top: 25px;
+    text-decoration: none;
+}
+
+/* =========================================
    SIDEBAR (TOP ESTRENOS)
    ========================================= */
 .sidebar {
@@ -612,6 +690,17 @@ body {
 }
 
 @media (max-width: 768px) {
+    .navbar {
+        padding: 15px 20px;
+    }
+
+    .navbar nav {
+        flex-basis: 100%;
+        order: 3;
+        gap: 12px;
+        justify-content: flex-start;
+    }
+
     .footer-container {
         grid-template-columns: 1fr 1fr;
     }
@@ -632,6 +721,14 @@ body {
 
     .movie-detail-content h1 {
         font-size: 2rem;
+    }
+
+    .favorites-page {
+        padding: 30px 20px;
+    }
+
+    .favorites-heading h1 {
+        font-size: 1.8rem;
     }
 }
 
