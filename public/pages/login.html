@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar sesión | WAGWAN</title>
+
+  <link rel="stylesheet" href="/public/css/index.css">
+  <link rel="stylesheet" href="/public/css/user.css">
+</head>
+
+<body class="dark-mode user-page">
+  <header class="navbar">
+    <a class="logo" href="/index.html">
+      <span class="play-icon">▶</span> WAGWAN
+    </a>
+
+    <nav aria-label="Navegación principal">
+      <a href="/index.html">Inicio</a>
+      <a href="/index.html#movie-catalog">Películas</a>
+      <a href="/public/pages/favoritos.html">Favoritos</a>
+    </nav>
+  </header>
+
+  <main class="user-shell auth-layout">
+    <section class="auth-story">
+      <span class="u-kicker">TU CINE. TU ESPACIO.</span>
+
+      <h1>
+        Las mejores historias.<br>
+        <span>Un lugar para ti.</span>
+      </h1>
+
+      <p class="u-muted">
+        Vuelve a lo que te gusta. Crea tu cuenta y dale
+        tu propio estilo a tu perfil de WAGWAN.
+      </p>
+
+      <div class="poster-strip" aria-hidden="true">
+        <img src="/public/media/avengers-doomsday.jpg" alt="">
+        <img src="/public/media/rapidos-y-furiosos.jpg" alt="">
+        <img src="/public/media/creed-iii.jpg" alt="">
+      </div>
+
+      <p class="u-note">
+        Una cuenta, tu propio perfil y muchas historias por descubrir.
+      </p>
+    </section>
+
+    <section class="u-card" aria-label="Acceso de usuario">
+      <div class="u-tabs" role="tablist" aria-label="Tipo de acceso">
+        <button
+          id="login-tab"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="auth-panel">
+          Iniciar sesión
+        </button>
+
+        <button
+          id="register-tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="auth-panel"
+          tabindex="-1">
+          Crear cuenta
+        </button>
+      </div>
+
+      <div
+        id="auth-panel"
+        role="tabpanel"
+        aria-labelledby="login-tab">
+
+        <h2 id="auth-title">Qué bueno verte de nuevo</h2>
+        <p class="u-muted" id="auth-subtitle">
+          Ingresa tus datos para continuar.
+        </p>
+
+        <form id="auth-form">
+          <label class="u-field" id="name-field" hidden>
+            Nombre completo
+            <input
+              name="name"
+              autocomplete="name"
+              minlength="2"
+              maxlength="60"
+              placeholder="¿Cómo te llamas?"
+              disabled>
+          </label>
+
+          <label class="u-field">
+            Correo electrónico
+            <input
+              name="email"
+              type="email"
+              required
+              maxlength="120"
+              autocomplete="email"
+              placeholder="tu@correo.com">
+          </label>
+
+          <label class="u-field">
+            Contraseña
+            <span class="u-password">
+              <input
+                name="password"
+                type="password"
+                required
+                maxlength="128"
+                autocomplete="current-password"
+                placeholder="Tu contraseña">
+
+              <button
+                type="button"
+                id="toggle-password"
+                aria-label="Mostrar contraseña"
+                aria-pressed="false">
+                Ver
+              </button>
+            </span>
+          </label>
+
+          <label class="u-field" id="confirm-field" hidden>
+            Confirmar contraseña
+            <input
+              name="confirm"
+              type="password"
+              autocomplete="new-password"
+              maxlength="128"
+              disabled>
+          </label>
+
+          <p
+            class="u-message"
+            id="auth-message"
+            role="status"
+            aria-live="polite">
+          </p>
+
+          <button
+            class="u-primary u-wide"
+            id="auth-submit"
+            type="submit">
+            Iniciar sesión →
+          </button>
+        </form>
+      </div>
+
+      <p class="u-note">
+        Demo académica: las cuentas se guardan solo en este navegador.
+        Usa datos y contraseñas de prueba.
+      </p>
+    </section>
+  </main>
+
+  <footer class="u-foot">
+    © 2026 WAGWAN · Tu próxima historia empieza aquí.
+  </footer>
+
+  <script type="module" src="/public/js/user-auth.js"></script>
+</body>
+</html>
