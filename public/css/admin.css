@@ -597,3 +597,72 @@ body {
         gap: 0;
     }
 }
+
+/* =========================================
+   BOTONES DE ACCIONES CRUD
+   ========================================= */
+
+.btn-edit-movie,
+.btn-delete-movie {
+    border: none;
+    border-radius: 7px;
+
+    padding: 7px 12px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
+    margin-right: 6px;
+}
+
+
+/* EDITAR */
+
+.btn-edit-movie {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.btn-edit-movie:hover {
+    background: #1d4ed8;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 5px 14px rgba(37, 99, 235, 0.30);
+}
+
+
+/* ELIMINAR */
+
+.btn-delete-movie {
+    background: transparent;
+
+    color: #ef4444;
+
+    border: 1px solid #ef4444;
+}
+
+.btn-delete-movie:hover {
+    background: #ef4444;
+    color: #ffffff;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 5px 14px rgba(239, 68, 68, 0.25);
+}
+
+
+/* Evitar que los botones queden demasiado juntos */
+
+.movies-table td:last-child {
+    white-space: nowrap;
+}
