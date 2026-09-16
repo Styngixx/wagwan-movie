@@ -4,7 +4,7 @@ function getFavoriteMovieIds() {
     return JSON.parse(localStorage.getItem('favoriteMovies') || '[]');
 }
 
-// Modificamos el render para que también acepte un término de búsqueda opcional
+// Función principal que renderiza el catálogo filtrando por categoría y texto de búsqueda
 function renderMovieCatalog(category = 'Todas', searchQuery = '') {
     const catalogElement = document.querySelector('#movie-catalog');
 
@@ -12,12 +12,12 @@ function renderMovieCatalog(category = 'Todas', searchQuery = '') {
         return;
     }
 
-    // 1. Filtramos primero por categoría
+    // 1. Filtramos por categoría
     let filteredMovies = category === 'Todas'
         ? movieCatalog
         : movieCatalog.filter(movie => movie.genres.includes(category));
 
-    // 2. Si hay texto en la barra de búsqueda, filtramos también por título o género
+    // 2. Filtramos por texto (si hay algo escrito en el buscador)
     if (searchQuery.trim() !== '') {
         const query = searchQuery.toLowerCase().trim();
         filteredMovies = filteredMovies.filter(movie => 
@@ -47,7 +47,7 @@ function renderMovieCatalog(category = 'Todas', searchQuery = '') {
 document.addEventListener('DOMContentLoaded', () => {
     renderMovieCatalog();
 
-    // Mantener la categoría activa actual para que la búsqueda no la borre
+    // Mantener la categoría actual activa
     let currentCategory = 'Todas';
 
     const movieFilters = document.querySelectorAll('.movie-filter');
@@ -64,28 +64,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =========================================
-    // BÚSQUEDA DINÁMICA EN TIEMPO REAL
+    // BÚSQUEDA DINÁMICA (En tiempo real) Y ESTÁTICA (Al presionar Enter)
     // =========================================
     const searchInput = document.querySelector('input[type="search"], input[placeholder*="Buscar"], .search-bar input');
 
     if (searchInput) {
+        // Búsqueda dinámica mientras escribes
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value;
             renderMovieCatalog(currentCategory, query);
         });
+
+        // Búsqueda estática al presionar la tecla Enter
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Evita recargar la página
+                const query = searchInput.value;
+                renderMovieCatalog(currentCategory, query);
+            }
+        });
     }
     
+    // =========================================
+    // CAMBIO DE TEMA (MODO OSCURO / CLARO)
+    // =========================================
     const themeToggle = document.querySelector('.theme-toggle');
     const body = document.body;
 
-    // Inicializar el icono dependiendo de si el HTML tiene la clase dark-mode
     if (body.classList.contains('dark-mode')) {
-        themeToggle.textContent = '☀️'; // Mostrar sol porque estamos en oscuro
+        themeToggle.textContent = '☀️'; 
     } else {
-        themeToggle.textContent = '🌙'; // Mostrar luna porque estamos en claro
+        themeToggle.textContent = '🌙'; 
     }
     
-    // Cambiar de tema al hacer clic
     themeToggle.addEventListener('click', () => {
         body.classList.toggle('dark-mode');
         
@@ -98,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Interactividad básica para la simulación
+    // Simulación de reproducción
     const playButton = document.querySelector('.btn-primary');
     if (playButton) {
         playButton.addEventListener('click', () => {
@@ -109,32 +120,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================
     // MODAL LOGIN ADMINISTRADOR
     // =========================================
-
     const adminDashboardLink = document.getElementById('adminDashboardLink');
     const adminModal = document.getElementById('adminModal');
     const adminModalClose = document.getElementById('adminModalClose');
 
     if (adminDashboardLink && adminModal && adminModalClose) {
-
-        // Abrir modal
         adminDashboardLink.addEventListener('click', (event) => {
             event.preventDefault();
             adminModal.classList.add('active');
         });
 
-        // Cerrar con la X
         adminModalClose.addEventListener('click', () => {
             adminModal.classList.remove('active');
         });
 
-        // Cerrar haciendo clic fuera de la ventana
         adminModal.addEventListener('click', (event) => {
             if (event.target === adminModal) {
                 adminModal.classList.remove('active');
             }
         });
 
-        // Cerrar con ESC
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Escape') {
                 adminModal.classList.remove('active');
@@ -145,14 +150,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================
     // VALIDAR LOGIN DEL ADMINISTRADOR
     // =========================================
-
     const adminLoginForm = document.getElementById('adminLoginForm');
     const adminUsuario = document.getElementById('adminUsuario');
     const adminPassword = document.getElementById('adminPassword');
     const adminLoginError = document.getElementById('adminLoginError');
 
     if (adminLoginForm) {
-
         adminLoginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
 
@@ -162,7 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
             adminLoginError.textContent = '';
 
             try {
-
                 const response = await fetch('public/data/admins.json');
 
                 if (!response.ok) {
@@ -177,32 +179,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 );
 
                 if (adminValido) {
-
-                    // Guardamos la sesión del administrador
                     localStorage.setItem('adminLogged', 'true');
 
                     adminLoginError.style.color = '#4ade80';
                     adminLoginError.textContent = 'Acceso correcto';
 
-                    // Esperamos un momento y entramos al dashboard
                     setTimeout(() => {
                         window.location.href = 'public/pages/admin.html';
                     }, 800);
 
                 } else {
-
                     adminLoginError.style.color = '#ff6b6b';
                     adminLoginError.textContent = 'Usuario o contraseña incorrectos';
-
                 }
 
             } catch (error) {
-
                 console.error(error);
-
                 adminLoginError.style.color = '#ff6b6b';
                 adminLoginError.textContent = 'Error al validar las credenciales';
-
             }
         });
     }
