@@ -4,7 +4,7 @@ function getFavoriteMovieIds() {
     return JSON.parse(localStorage.getItem('favoriteMovies') || '[]');
 }
 
-// Función principal que renderiza el catálogo filtrando por categoría y texto de búsqueda
+// Función principal que renderiza el catálogo principal
 function renderMovieCatalog(category = 'Todas', searchQuery = '') {
     const catalogElement = document.querySelector('#movie-catalog');
 
@@ -17,7 +17,7 @@ function renderMovieCatalog(category = 'Todas', searchQuery = '') {
         ? movieCatalog
         : movieCatalog.filter(movie => movie.genres.includes(category));
 
-    // 2. Filtramos por texto (si hay algo escrito en el buscador)
+    // 2. Filtramos por texto de búsqueda
     if (searchQuery.trim() !== '') {
         const query = searchQuery.toLowerCase().trim();
         filteredMovies = filteredMovies.filter(movie => 
@@ -47,7 +47,6 @@ function renderMovieCatalog(category = 'Todas', searchQuery = '') {
 document.addEventListener('DOMContentLoaded', () => {
     renderMovieCatalog();
 
-    // Mantener la categoría actual activa
     let currentCategory = 'Todas';
 
     const movieFilters = document.querySelectorAll('.movie-filter');
@@ -64,23 +63,75 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =========================================
-    // BÚSQUEDA DINÁMICA (En tiempo real) Y ESTÁTICA (Al presionar Enter)
+    // BÚSQUEDA DINÁMICA CON MENÚ FLOTANTE Y ESTÁTICA (ENTER)
     // =========================================
     const searchInput = document.querySelector('input[type="search"], input[placeholder*="Buscar"], .search-bar input');
 
     if (searchInput) {
+        // Crear contenedor flotante para el autocompletado si no existe
+        let dropdown = document.querySelector('.search-dropdown-results');
+        if (!dropdown) {
+            dropdown = document.createElement('div');
+            dropdown.className = 'search-dropdown-results';
+            if (searchInput.parentElement) {
+                searchInput.parentElement.style.position = 'relative';
+                searchInput.parentElement.appendChild(dropdown);
+            }
+        }
+
         // Búsqueda dinámica mientras escribes
         searchInput.addEventListener('input', (e) => {
-            const query = e.target.value;
+            const query = e.target.value.toLowerCase().trim();
+
+            if (query === '') {
+                dropdown.classList.remove('active');
+                renderMovieCatalog(currentCategory, '');
+                return;
+            }
+
+            const filtered = movieCatalog.filter(movie => 
+                movie.title.toLowerCase().includes(query) ||
+                movie.genres.some(genre => genre.toLowerCase().includes(query))
+            );
+
+            if (filtered.length === 0) {
+                dropdown.innerHTML = '<p style="padding: 10px; color: #94a3b8; text-align: center; font-size: 13px;">No se encontraron resultados</p>';
+                dropdown.classList.add('active');
+                return;
+            }
+
+            // Renderizamos las sugerencias idénticas al diseño de streaming solicitado
+            dropdown.innerHTML = filtered.slice(0, 4).map(movie => `
+                <a href="/public/pages/pelicula.html?id=${movie.id}" class="search-result-item">
+                    <img src="${movie.poster}" alt="${movie.title}" class="search-result-img">
+                    <div class="search-result-info">
+                        <h4>${movie.title} (${movie.year})</h4>
+                        <p>Película &nbsp; ⏱ ${movie.duration || '1h 45m'} &nbsp; ★ ${movie.rating}</p>
+                        <p style="font-size: 11px; color: #64748b;">🛡 ${movie.year}</p>
+                    </div>
+                </a>
+            `).join('') + `
+                <a href="#" class="search-all-btn" onclick="event.preventDefault();">Ver todos los resultados</a>
+            `;
+
+            dropdown.classList.add('active');
             renderMovieCatalog(currentCategory, query);
         });
 
-        // Búsqueda estática al presionar la tecla Enter
+        // Búsqueda estática al presionar Enter
         searchInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                e.preventDefault(); // Evita recargar la página
+                e.preventDefault();
+                dropdown.classList.remove('active');
                 const query = searchInput.value;
                 renderMovieCatalog(currentCategory, query);
+            }
+        });
+
+        // Ocultar menú flotante al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('active');
             }
         });
     }
@@ -91,23 +142,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.querySelector('.theme-toggle');
     const body = document.body;
 
-    if (body.classList.contains('dark-mode')) {
-        themeToggle.textContent = '☀️'; 
-    } else {
-        themeToggle.textContent = '🌙'; 
-    }
-    
-    themeToggle.addEventListener('click', () => {
-        body.classList.toggle('dark-mode');
-        
+    if (themeToggle) {
         if (body.classList.contains('dark-mode')) {
             themeToggle.textContent = '☀️'; 
-            themeToggle.title = "Cambiar a Modo Claro";
         } else {
-            themeToggle.textContent = '🌙';
-            themeToggle.title = "Cambiar a Modo Oscuro";
+            themeToggle.textContent = '🌙'; 
         }
-    });
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                themeToggle.textContent = '☀️'; 
+                themeToggle.title = "Cambiar a Modo Claro";
+            } else {
+                themeToggle.textContent = '🌙';
+                themeToggle.title = "Cambiar a Modo Oscuro";
+            }
+        });
+    }
 
     // Simulación de reproducción
     const playButton = document.querySelector('.btn-primary');
