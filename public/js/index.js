@@ -17,27 +17,17 @@ function renderMovieCatalog(category = 'Todas') {
     }
 
     catalogElement.innerHTML = filteredMovies.map(movie => `
-        <article class="card-ep" data-movie-id="${movie.id}">
+        <a class="card-ep" href="/public/pages/pelicula.html?id=${movie.id}" data-movie-id="${movie.id}">
             <div class="ep-img" style="background-image: url('${movie.poster}')">
                 <span class="ep-badge">★ ${movie.rating}</span>
             </div>
             <div class="ep-title">${movie.title} (${movie.year})</div>
-        </article>
+        </a>
     `).join('');
-}
-
-function addMovieCardListeners() {
-    const movieCards = document.querySelectorAll('.card-ep');
-    movieCards.forEach(card => {
-        card.addEventListener('click', () => {
-            alert("Cargando película...");
-        });
-    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     renderMovieCatalog();
-    addMovieCardListeners();
 
     const movieFilters = document.querySelectorAll('.movie-filter');
     movieFilters.forEach(filterButton => {
@@ -45,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
             movieFilters.forEach(button => button.classList.remove('active'));
             filterButton.classList.add('active');
             renderMovieCatalog(filterButton.dataset.category);
-            addMovieCardListeners();
         });
     });
     

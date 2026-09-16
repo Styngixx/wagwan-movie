@@ -290,6 +290,8 @@ body {
     flex-direction: column;
     gap: 8px;
     cursor: pointer;
+    color: inherit;
+    text-decoration: none;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -332,6 +334,109 @@ body {
 .ep-title {
     font-size: 0.85rem;
     color: var(--text-muted);
+}
+
+/* =========================================
+   DETALLE DE PELÍCULA
+   ========================================= */
+.movie-detail-page {
+    max-width: 1200px;
+    min-height: calc(100vh - 180px);
+    margin: 0 auto;
+    padding: 40px;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 25px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    color: var(--text-main);
+}
+
+.movie-detail {
+    display: grid;
+    grid-template-columns: minmax(260px, 380px) 1fr;
+    gap: 45px;
+    align-items: center;
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+}
+
+.movie-detail-poster {
+    min-height: 450px;
+    border-radius: 8px;
+    background-position: center;
+    background-size: cover;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.movie-detail-content h1 {
+    font-size: 2.5rem;
+    margin: 8px 0 18px;
+}
+
+.detail-kicker {
+    color: var(--accent-blue);
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.detail-meta,
+.detail-genres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.detail-rating,
+.detail-genres span {
+    background-color: var(--badge-bg);
+    color: var(--text-main);
+    border-radius: 4px;
+    padding: 5px 9px;
+}
+
+.detail-rating {
+    color: #f5b041;
+    font-weight: bold;
+}
+
+.movie-detail-content h2 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+.detail-synopsis {
+    max-width: 650px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 28px;
+}
+
+.movie-not-found {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.movie-not-found h1 {
+    margin-bottom: 12px;
+}
+
+.movie-not-found p {
+    color: var(--text-muted);
+    margin-bottom: 25px;
 }
 
 /* =========================================
@@ -478,6 +583,24 @@ body {
 @media (max-width: 768px) {
     .footer-container {
         grid-template-columns: 1fr 1fr;
+    }
+
+    .movie-detail-page {
+        padding: 25px 20px;
+    }
+
+    .movie-detail {
+        grid-template-columns: 1fr;
+        gap: 25px;
+        padding: 20px;
+    }
+
+    .movie-detail-poster {
+        min-height: 360px;
+    }
+
+    .movie-detail-content h1 {
+        font-size: 2rem;
     }
 }
 
