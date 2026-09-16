@@ -1,4 +1,24 @@
+import { movieCatalog } from './movies.js';
+
+function renderMovieCatalog() {
+    const catalogElement = document.querySelector('#movie-catalog');
+
+    if (!catalogElement) {
+        return;
+    }
+
+    catalogElement.innerHTML = movieCatalog.map(movie => `
+        <article class="card-ep" data-movie-id="${movie.id}">
+            <div class="ep-img" style="background-image: url('${movie.poster}')">
+                <span class="ep-badge">★ ${movie.rating}</span>
+            </div>
+            <div class="ep-title">${movie.title} (${movie.year})</div>
+        </article>
+    `).join('');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    renderMovieCatalog();
     
     const themeToggle = document.querySelector('.theme-toggle');
     const body = document.body;
@@ -31,10 +51,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const episodeCards = document.querySelectorAll('.card-ep');
-    episodeCards.forEach(card => {
+    const movieCards = document.querySelectorAll('.card-ep');
+    movieCards.forEach(card => {
         card.addEventListener('click', () => {
-            alert("Cargando episodio...");
+            alert("Cargando película...");
         });
     });
 
