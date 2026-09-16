@@ -1,256 +1,123 @@
-import { movieCatalog } from './movies.js';
-
-function getFavoriteMovieIds() {
-    return JSON.parse(localStorage.getItem('favoriteMovies') || '[]');
-}
-
-// Función principal que renderiza el catálogo principal
-function renderMovieCatalog(category = 'Todas', searchQuery = '') {
-    const catalogElement = document.querySelector('#movie-catalog');
-
-    if (!catalogElement) {
-        return;
-    }
-
-    // 1. Filtramos por categoría
-    let filteredMovies = category === 'Todas'
-        ? movieCatalog
-        : movieCatalog.filter(movie => movie.genres.includes(category));
-
-    // 2. Filtramos por texto de búsqueda
-    if (searchQuery.trim() !== '') {
-        const query = searchQuery.toLowerCase().trim();
-        filteredMovies = filteredMovies.filter(movie => 
-            movie.title.toLowerCase().includes(query) ||
-            movie.genres.some(genre => genre.toLowerCase().includes(query))
-        );
-    }
-
-    if (filteredMovies.length === 0) {
-        catalogElement.innerHTML = '<p class="empty-catalog">No hay películas disponibles con esos criterios.</p>';
-        return;
-    }
-
-    const favoriteMovieIds = getFavoriteMovieIds();
-
-    catalogElement.innerHTML = filteredMovies.map(movie => `
-        <a class="card-ep" href="/public/pages/pelicula.html?id=${movie.id}" data-movie-id="${movie.id}">
-            <div class="ep-img" style="background-image: url('${movie.poster}')">
-                <span class="ep-badge">★ ${movie.rating}</span>
-                ${favoriteMovieIds.includes(movie.id) ? '<span class="favorite-indicator" title="Película favorita">♥</span>' : ''}
-            </div>
-            <div class="ep-title">${movie.title} (${movie.year})</div>
-        </a>
-    `).join('');
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-    renderMovieCatalog();
 
-    let currentCategory = 'Todas';
-
-    const movieFilters = document.querySelectorAll('.movie-filter');
-    movieFilters.forEach(filterButton => {
-        filterButton.addEventListener('click', () => {
-            movieFilters.forEach(button => button.classList.remove('active'));
-            filterButton.classList.add('active');
-            currentCategory = filterButton.dataset.category;
-            
-            const searchInput = document.querySelector('input[type="search"], input[placeholder*="Buscar"], .search-bar input');
-            const query = searchInput ? searchInput.value : '';
-            renderMovieCatalog(currentCategory, query);
-        });
-    });
-
-    // =========================================
-    // BÚSQUEDA DINÁMICA CON MENÚ FLOTANTE Y ESTÁTICA (ENTER)
-    // =========================================
-    const searchInput = document.querySelector('input[type="search"], input[placeholder*="Buscar"], .search-bar input');
-
-    if (searchInput) {
-        // Crear contenedor flotante para el autocompletado si no existe
-        let dropdown = document.querySelector('.search-dropdown-results');
-        if (!dropdown) {
-            dropdown = document.createElement('div');
-            dropdown.className = 'search-dropdown-results';
-            if (searchInput.parentElement) {
-                searchInput.parentElement.style.position = 'relative';
-                searchInput.parentElement.appendChild(dropdown);
-            }
-        }
-
-        // Búsqueda dinámica mientras escribes
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase().trim();
-
-            if (query === '') {
-                dropdown.classList.remove('active');
-                renderMovieCatalog(currentCategory, '');
-                return;
-            }
-
-            const filtered = movieCatalog.filter(movie => 
-                movie.title.toLowerCase().includes(query) ||
-                movie.genres.some(genre => genre.toLowerCase().includes(query))
-            );
-
-            if (filtered.length === 0) {
-                dropdown.innerHTML = '<p style="padding: 10px; color: #94a3b8; text-align: center; font-size: 13px;">No se encontraron resultados</p>';
-                dropdown.classList.add('active');
-                return;
-            }
-
-            // Renderizamos las sugerencias idénticas al diseño de streaming solicitado
-            dropdown.innerHTML = filtered.slice(0, 4).map(movie => `
-                <a href="/public/pages/pelicula.html?id=${movie.id}" class="search-result-item">
-                    <img src="${movie.poster}" alt="${movie.title}" class="search-result-img">
-                    <div class="search-result-info">
-                        <h4>${movie.title} (${movie.year})</h4>
-                        <p>Película &nbsp; ⏱ ${movie.duration || '1h 45m'} &nbsp; ★ ${movie.rating}</p>
-                        <p style="font-size: 11px; color: #64748b;">🛡 ${movie.year}</p>
-                    </div>
-                </a>
-            `).join('') + `
-                <a href="#" class="search-all-btn" onclick="event.preventDefault();">Ver todos los resultados</a>
-            `;
-
-            dropdown.classList.add('active');
-            renderMovieCatalog(currentCategory, query);
-        });
-
-        // Búsqueda estática al presionar Enter
-        searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                dropdown.classList.remove('active');
-                const query = searchInput.value;
-                renderMovieCatalog(currentCategory, query);
-            }
-        });
-
-        // Ocultar menú flotante al hacer clic fuera
-        document.addEventListener('click', (e) => {
-            if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
-                dropdown.classList.remove('active');
-            }
-        });
-    }
-    
-    // =========================================
-    // CAMBIO DE TEMA (MODO OSCURO / CLARO)
-    // =========================================
+    // 1. TEMA OSCURO / CLARO
     const themeToggle = document.querySelector('.theme-toggle');
     const body = document.body;
 
     if (themeToggle) {
-        if (body.classList.contains('dark-mode')) {
-            themeToggle.textContent = '☀️'; 
-        } else {
-            themeToggle.textContent = '🌙'; 
-        }
-        
         themeToggle.addEventListener('click', () => {
             body.classList.toggle('dark-mode');
-            
-            if (body.classList.contains('dark-mode')) {
-                themeToggle.textContent = '☀️'; 
-                themeToggle.title = "Cambiar a Modo Claro";
-            } else {
-                themeToggle.textContent = '🌙';
-                themeToggle.title = "Cambiar a Modo Oscuro";
-            }
+            // Cambiamos el iconito
+            themeToggle.textContent = body.classList.contains('dark-mode') ? '☀️' : '🌙';
         });
     }
 
-    // Simulación de reproducción
-    const playButton = document.querySelector('.btn-primary');
-    if (playButton) {
-        playButton.addEventListener('click', () => {
-            alert("▶ Iniciando película...");
-        });
-    }
-
-    // =========================================
-    // MODAL LOGIN ADMINISTRADOR
-    // =========================================
-    const adminDashboardLink = document.getElementById('adminDashboardLink');
+    // 2. MODAL DEL DASHBOARD (ADMIN)
+    const adminLink = document.getElementById('adminDashboardLink');
     const adminModal = document.getElementById('adminModal');
     const adminModalClose = document.getElementById('adminModalClose');
+    const adminForm = document.getElementById('adminLoginForm');
 
-    if (adminDashboardLink && adminModal && adminModalClose) {
-        adminDashboardLink.addEventListener('click', (event) => {
-            event.preventDefault();
-            adminModal.classList.add('active');
+    if (adminLink && adminModal) {
+        adminLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            adminModal.style.display = 'flex'; // Muestra el modal
         });
+    }
 
+    if (adminModalClose) {
         adminModalClose.addEventListener('click', () => {
-            adminModal.classList.remove('active');
+            adminModal.style.display = 'none'; // Oculta el modal
         });
+    }
 
-        adminModal.addEventListener('click', (event) => {
-            if (event.target === adminModal) {
-                adminModal.classList.remove('active');
-            }
-        });
+   // 2. MODAL DEL DASHBOARD (ADMIN) - Con Latencia Elegante
+    if (adminForm) {
+        adminForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Freno de mano
+            
+            const user = document.getElementById('adminUsuario').value;
+            const pass = document.getElementById('adminPassword').value;
+            const errorMsg = document.getElementById('adminLoginError');
+            
+            // 1. Efecto visual de "Cargando..."
+            errorMsg.textContent = "⏳ Validando credenciales en la base de datos...";
+            errorMsg.style.color = "#f1c40f"; // Amarillo
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuario: user, password: pass })
+                });
 
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
-                adminModal.classList.remove('active');
+                const data = await response.json();
+
+                if (data.success) {
+                    // 2. Luz verde visual
+                    errorMsg.textContent = "✅ ¡Acceso concedido! Abriendo bóveda...";
+                    errorMsg.style.color = "#2ecc71"; // Verde
+                    
+                    // 3. La famosa latencia (1.5 segundos = 1500 milisegundos) antes de redirigir
+                    setTimeout(() => {
+                        window.location.href = '/public/pages/admin.html';
+                    }, 1500);
+
+                } else {
+                    // Si falla (mal user, mala pass o no es admin)
+                    errorMsg.textContent = "❌ " + data.message;
+                    errorMsg.style.color = '#e74c3c'; // Rojo
+                }
+            } catch (error) {
+                errorMsg.textContent = '🔌 Error fatal: No hay conexión con el servidor Node.';
+                errorMsg.style.color = '#e74c3c';
             }
         });
     }
 
-    // =========================================
-    // VALIDAR LOGIN DEL ADMINISTRADOR
-    // =========================================
-    const adminLoginForm = document.getElementById('adminLoginForm');
-    const adminUsuario = document.getElementById('adminUsuario');
-    const adminPassword = document.getElementById('adminPassword');
-    const adminLoginError = document.getElementById('adminLoginError');
-
-    if (adminLoginForm) {
-        adminLoginForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-
-            const usuarioIngresado = adminUsuario.value.trim();
-            const passwordIngresado = adminPassword.value.trim();
-
-            adminLoginError.textContent = '';
-
-            try {
-                const response = await fetch('public/data/admins.json');
-
-                if (!response.ok) {
-                    throw new Error('No se pudo cargar el archivo de administradores');
-                }
-
-                const admins = await response.json();
-
-                const adminValido = admins.find(admin =>
-                    admin.usuario === usuarioIngresado &&
-                    admin.password === passwordIngresado
-                );
-
-                if (adminValido) {
-                    localStorage.setItem('adminLogged', 'true');
-
-                    adminLoginError.style.color = '#4ade80';
-                    adminLoginError.textContent = 'Acceso correcto';
-
-                    setTimeout(() => {
-                        window.location.href = 'public/pages/admin.html';
-                    }, 800);
-
+    // 3. BUSCADOR DE PELÍCULAS
+    const searchInput = document.querySelector('.search-bar input');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.movie-card'); // Captura las tarjetas que trajo Supabase
+            
+            cards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                if (title.includes(term)) {
+                    card.style.display = 'block';
                 } else {
-                    adminLoginError.style.color = '#ff6b6b';
-                    adminLoginError.textContent = 'Usuario o contraseña incorrectos';
+                    card.style.display = 'none';
                 }
+            });
+        });
+    }
 
-            } catch (error) {
-                console.error(error);
-                adminLoginError.style.color = '#ff6b6b';
-                adminLoginError.textContent = 'Error al validar las credenciales';
-            }
+    // 4. FILTROS POR CATEGORÍA
+    const filterButtons = document.querySelectorAll('.movie-filter');
+    
+    if (filterButtons.length > 0) {
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Quitar clase active a todos y dársela al que clickeaste
+                filterButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const category = btn.getAttribute('data-category');
+                const cards = document.querySelectorAll('.movie-card');
+
+                cards.forEach(card => {
+                    // El género está en el segundo párrafo de la tarjeta
+                    const genreText = card.querySelector('.movie-info p:nth-of-type(2)').textContent;
+                    
+                    if (category === 'Todas' || genreText.includes(category)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
         });
     }
 });

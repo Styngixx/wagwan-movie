@@ -16,24 +16,14 @@ const getPeliculas = async (req, res) => {
     }
 };
 
-// Obtener el detalle de una película junto con sus enlaces
 const getPeliculaById = async (req, res) => {
     try {
         const { id } = req.params;
         
-        // El join con la tabla 'enlaces' tal cual tu diagrama
+        // El select ahora trae solo los datos de la película, sin buscar la tabla 'enlaces'
         const { data, error } = await supabase
             .from('peliculas')
-            .select(`
-                *,
-                enlaces (
-                    id,
-                    servidor,
-                    url,
-                    idioma,
-                    calidad
-                )
-            `)
+            .select('*') 
             .eq('id', id)
             .single();
 
