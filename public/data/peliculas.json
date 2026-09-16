@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "titulo": "Rápidos y Furiosos 11",
+    "genero": "Acción",
+    "anio": 2026,
+    "duracion": "2h 15m",
+    "imagen": "../media/rapidos-y-furiosos.jpg"
+  },
+  {
+    "id": 2,
+    "titulo": "Avengers: Doomsday",
+    "genero": "Acción",
+    "anio": 2026,
+    "duracion": "2h 20m",
+    "imagen": "../media/avengers-doomsday.jpg"
+  },
+  {
+    "id": 3,
+    "titulo": "Pelé",
+    "genero": "Drama",
+    "anio": 2016,
+    "duracion": "1h 47m",
+    "imagen": "../media/pele-pelicula.jpg"
+  },
+  {
+    "id": 4,
+    "titulo": "Scary Movie 6",
+    "genero": "Comedia",
+    "anio": 2026,
+    "duracion": "1h 40m",
+    "imagen": "../media/scary-movie-6.webp"
+  }
+]

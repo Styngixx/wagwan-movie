@@ -290,7 +290,7 @@ body {
 .img-4 { background-image: url('/public/media/pele-pelicula.jpg'); }
 .img-5 { background-image: url('/public/media/rapidos-y-furiosos.jpg'); }
 .img-6 { background-image: url('/public/media/scary-movie-6.webp'); }
-.img-7 { background-image: url('/public/media/spiderman-brand-new.webp'); }
+.img-7 { background-image: url('/public/media/spiderman-brand-new-day.webp'); }
 
 
 .ep-badge {
@@ -455,4 +455,267 @@ body {
     .footer-container {
         grid-template-columns: 1fr 1fr;
     }
+}
+
+/* =========================================
+   ENLACE DASHBOARD - EFECTO DORADO
+   ========================================= */
+
+.navbar nav .admin-link {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+
+    color: #ffffff;
+    font-weight: 600;
+
+    transition:
+        color 0.3s ease,
+        text-shadow 0.3s ease;
+
+    animation: dashboardColor 3s ease-in-out infinite;
+}
+
+/* Cambio suave entre blanco y amarillo */
+@keyframes dashboardColor {
+    0%,
+    100% {
+        color: #ffffff;
+        text-shadow: none;
+    }
+
+    50% {
+        color: #f5c542;
+        text-shadow: 0 0 8px rgba(245, 197, 66, 0.45);
+    }
+}
+
+/* Luz que atraviesa el texto */
+.navbar nav .admin-link::after {
+    content: "";
+    position: absolute;
+
+    top: -20%;
+    left: -60%;
+
+    width: 35%;
+    height: 140%;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.85),
+        transparent
+    );
+
+    transform: skewX(-20deg);
+
+    animation: dashboardShine 3s ease-in-out infinite;
+}
+
+@keyframes dashboardShine {
+    0%,
+    35% {
+        left: -60%;
+        opacity: 0;
+    }
+
+    45% {
+        opacity: 1;
+    }
+
+    65% {
+        left: 120%;
+        opacity: 1;
+    }
+
+    66%,
+    100% {
+        left: 120%;
+        opacity: 0;
+    }
+}
+
+/* Hover */
+.navbar nav .admin-link:hover {
+    color: #ffd54a;
+    text-shadow:
+        0 0 8px rgba(255, 213, 74, 0.6),
+        0 0 16px rgba(255, 213, 74, 0.25);
+}
+
+/* =========================================
+   MODAL LOGIN ADMINISTRADOR
+   ========================================= */
+
+.admin-modal {
+    position: fixed;
+    inset: 0;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(3, 8, 15, 0.78);
+    backdrop-filter: blur(6px);
+
+    z-index: 1000;
+    padding: 20px;
+}
+
+.admin-modal.active {
+    display: flex;
+}
+
+.admin-modal-content {
+    position: relative;
+
+    width: 100%;
+    max-width: 420px;
+
+    padding: 35px;
+
+    background: #0d1829;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.55),
+        0 0 30px rgba(37, 99, 235, 0.08);
+
+    color: #ffffff;
+}
+
+.admin-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 18px;
+
+    border: none;
+    background: transparent;
+
+    color: #8b9bb4;
+    font-size: 28px;
+
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.admin-modal-close:hover {
+    color: #f5c542;
+    transform: scale(1.1);
+}
+
+.admin-modal-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+    margin-bottom: 25px;
+
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.admin-modal-logo .play-icon {
+    color: #2563eb;
+}
+
+.admin-modal-content h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.admin-modal-description {
+    text-align: center;
+
+    color: #8b9bb4;
+    font-size: 0.9rem;
+    line-height: 1.5;
+
+    margin-bottom: 25px;
+}
+
+.admin-form-group {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.admin-form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.admin-form-group input {
+    width: 100%;
+
+    padding: 12px 14px;
+
+    border: 1px solid #1e293b;
+    border-radius: 10px;
+
+    background: #060d17;
+    color: #ffffff;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.admin-form-group input::placeholder {
+    color: #5e6d82;
+}
+
+.admin-form-group input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.admin-login-button {
+    width: 100%;
+
+    margin-top: 8px;
+    padding: 12px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    font-weight: 700;
+    font-size: 0.95rem;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.admin-login-button:hover {
+    background: #1d4ed8;
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+}
+
+.admin-login-error {
+    min-height: 18px;
+
+    margin-top: 5px;
+
+    text-align: center;
+    font-size: 0.82rem;
+
+    color: #ff6b6b;
 }
