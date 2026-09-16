@@ -1,7 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const moviesTableBody = document.getElementById('moviesTableBody');
+        // =========================================
+    // PROTEGER DASHBOARD
+    // =========================================
 
+    const adminLogged = localStorage.getItem('adminLogged');
+
+    if (adminLogged !== 'true') {
+        window.location.href = '../../index.html';
+        return;
+    }
+
+    const moviesTableBody = document.getElementById('moviesTableBody');
+    const adminLogout = document.getElementById('adminLogout');
+    const totalMovies = document.getElementById('totalMovies');
+    const totalGenres = document.getElementById('totalGenres');
+    const total2026 = document.getElementById('total2026');
     const btnAddMovie = document.getElementById('btnAddMovie');
     const movieModal = document.getElementById('movieModal');
     const movieModalClose = document.getElementById('movieModalClose');
@@ -59,6 +73,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // =========================================
+// ACTUALIZAR ESTADÍSTICAS
+// =========================================
+
+function actualizarEstadisticas(listaPeliculas) {
+
+    // Total de películas
+    totalMovies.textContent = listaPeliculas.length;
+
+    // Total de géneros diferentes
+    const generos = new Set(
+        listaPeliculas.map(pelicula => pelicula.genero)
+    );
+
+    totalGenres.textContent = generos.size;
+
+    // Películas del año 2026
+    const estrenos2026 = listaPeliculas.filter(
+        pelicula => pelicula.anio === 2026
+    );
+
+    total2026.textContent = estrenos2026.length;
+}
+
 
     // =========================================
     // MOSTRAR PELÍCULAS
@@ -67,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function mostrarPeliculas(listaPeliculas) {
 
         moviesTableBody.innerHTML = '';
+        actualizarEstadisticas(listaPeliculas);
 
         listaPeliculas.forEach(pelicula => {
 
@@ -390,8 +429,22 @@ if (movieForm) {
 
 
     // =========================================
-    // INICIAR
-    // =========================================
+// CERRAR SESIÓN
+// =========================================
+
+if (adminLogout) {
+
+    adminLogout.addEventListener('click', () => {
+
+        // Eliminar sesión del administrador
+        localStorage.removeItem('adminLogged');
+
+        // Volver a la página principal
+        window.location.href = '../../index.html';
+
+    });
+
+}
 
     cargarPeliculas();
 
