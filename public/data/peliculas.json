@@ -30,5 +30,45 @@
     "anio": 2026,
     "duracion": "1h 40m",
     "imagen": "../media/scary-movie-6.webp"
+  },
+  {
+    "id": 5,
+    "titulo": "El Gran Gatsby",
+    "genero": "Drama",
+    "anio": 2013,
+    "duracion": "2h 23m",
+    "imagen": "../media/el-gran-gatsby.jpg"
+  },
+  {
+    "id": 6,
+    "titulo": "Spider-Man: Brand New Day",
+    "genero": "Acción",
+    "anio": 2013,
+    "duracion": "2h 09m",
+    "imagen": "../media/el-gran-gatsby.jpg"
+  },
+  {
+    "id": 7,
+    "titulo": "Obsesión",
+    "genero": "Suspenso",
+    "anio": 2026,
+    "duracion": "1h 45m",
+    "imagen": "../media/obsesion.jpg"
+  },
+  {
+    "id": 9,
+    "titulo": "Black Adam",
+    "genero": "Acción",
+    "anio": 2022,
+    "duracion": "2h 07m",
+    "imagen": "../media/black-adam.jpg"
+  },
+  {
+    "id": 10,
+    "titulo": "Creed III",
+    "genero": "Acción",
+    "anio": 2023,
+    "duracion": "2h 04m",
+    "imagen": "../media/creed-iii.jpg"
   }
 ]
