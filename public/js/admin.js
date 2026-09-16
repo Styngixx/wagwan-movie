@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const movieModal = document.getElementById('movieModal');
     const movieModalClose = document.getElementById('movieModalClose');
     const movieForm = document.getElementById('movieForm');
+
     const movieTitle = document.getElementById('movieTitle');
     const movieGenre = document.getElementById('movieGenre');
     const movieYear = document.getElementById('movieYear');
@@ -13,54 +14,61 @@ document.addEventListener('DOMContentLoaded', () => {
     const movieImage = document.getElementById('movieImage');
     const movieFormError = document.getElementById('movieFormError');
 
-let peliculas = [];
+    let peliculas = [];
+    let peliculaEditandoId = null;
 
-    // Cargar películas desde el JSON
+
+    // =========================================
+    // CARGAR PELÍCULAS
+    // =========================================
+
     async function cargarPeliculas() {
 
-    try {
+        try {
 
-        const peliculasGuardadas = localStorage.getItem('peliculas');
+            const peliculasGuardadas = localStorage.getItem('peliculas');
 
-        // Si ya existen películas guardadas, usamos esas
-        if (peliculasGuardadas) {
+            // Si ya existen películas guardadas usamos localStorage
+            if (peliculasGuardadas) {
 
-            peliculas = JSON.parse(peliculasGuardadas);
+                peliculas = JSON.parse(peliculasGuardadas);
 
-        } else {
+            } else {
 
-            // Si es la primera vez, cargamos el JSON inicial
-            const response = await fetch('../data/peliculas.json');
+                // Primera carga desde peliculas.json
+                const response = await fetch('../data/peliculas.json');
 
-            if (!response.ok) {
-                throw new Error('No se pudieron cargar las películas');
+                if (!response.ok) {
+                    throw new Error('No se pudieron cargar las películas');
+                }
+
+                peliculas = await response.json();
+
+                localStorage.setItem(
+                    'peliculas',
+                    JSON.stringify(peliculas)
+                );
             }
 
-            peliculas = await response.json();
+            mostrarPeliculas(peliculas);
 
-            // Guardamos la lista inicial en localStorage
-            localStorage.setItem(
-                'peliculas',
-                JSON.stringify(peliculas)
-            );
+        } catch (error) {
+
+            console.error('Error al cargar películas:', error);
+
         }
-
-        mostrarPeliculas(peliculas);
-
-    } catch (error) {
-
-        console.error('Error:', error);
-
     }
-}
 
 
-    // Mostrar películas en la tabla
-    function mostrarPeliculas(peliculas) {
+    // =========================================
+    // MOSTRAR PELÍCULAS
+    // =========================================
+
+    function mostrarPeliculas(listaPeliculas) {
 
         moviesTableBody.innerHTML = '';
 
-        peliculas.forEach(pelicula => {
+        listaPeliculas.forEach(pelicula => {
 
             const fila = document.createElement('tr');
 
@@ -82,8 +90,21 @@ let peliculas = [];
                 <td>${pelicula.duracion}</td>
 
                 <td>
-                    <button>Editar</button>
-                    <button>Eliminar</button>
+
+                    <button
+                        class="btn-edit-movie"
+                        data-id="${pelicula.id}"
+                    >
+                        Editar
+                    </button>
+
+                    <button
+                        class="btn-delete-movie"
+                        data-id="${pelicula.id}"
+                    >
+                        Eliminar
+                    </button>
+
                 </td>
             `;
 
@@ -91,40 +112,171 @@ let peliculas = [];
 
         });
 
+
+        // =========================================
+        // ELIMINAR PELÍCULA
+        // =========================================
+
+        const deleteButtons =
+            document.querySelectorAll('.btn-delete-movie');
+
+        deleteButtons.forEach(button => {
+
+            button.addEventListener('click', () => {
+
+                const id = Number(button.dataset.id);
+
+                const pelicula = listaPeliculas.find(
+                    pelicula => pelicula.id === id
+                );
+
+                if (!pelicula) {
+                    return;
+                }
+
+                const confirmar = confirm(
+                    `¿Seguro que deseas eliminar "${pelicula.titulo}"?`
+                );
+
+                if (!confirmar) {
+                    return;
+                }
+
+                peliculas = peliculas.filter(
+                    pelicula => pelicula.id !== id
+                );
+
+                localStorage.setItem(
+                    'peliculas',
+                    JSON.stringify(peliculas)
+                );
+
+                mostrarPeliculas(peliculas);
+
+            });
+
+        });
+
+
+        // =========================================
+        // EDITAR PELÍCULA
+        // =========================================
+
+        const editButtons =
+            document.querySelectorAll('.btn-edit-movie');
+
+        editButtons.forEach(button => {
+
+            button.addEventListener('click', () => {
+
+                const id = Number(button.dataset.id);
+
+                const pelicula = listaPeliculas.find(
+                    pelicula => pelicula.id === id
+                );
+
+                if (!pelicula) {
+                    return;
+                }
+
+                // Guardar el ID de la película que estamos editando
+peliculaEditandoId = pelicula.id;
+
+// Cargar los datos en el formulario
+movieTitle.value = pelicula.titulo;
+movieGenre.value = pelicula.genero;
+movieYear.value = pelicula.anio;
+movieDuration.value = pelicula.duracion;
+movieImage.value = pelicula.imagen;
+
+// Cambiar el título del modal
+document.querySelector('.movie-modal-content h2').textContent =
+    'Editar película';
+
+// Cambiar el texto del botón
+document.querySelector('.movie-save-button').textContent =
+    'Guardar cambios';
+
+// Abrir el modal
+movieModal.classList.add('active'); 
+
+            });
+
+        });
+
     }
 
+
     // =========================================
-// MODAL AGREGAR PELÍCULA
-// =========================================
+    // ABRIR / CERRAR MODAL
+    // =========================================
 
-if (btnAddMovie && movieModal && movieModalClose) {
+    if (
+        btnAddMovie &&
+        movieModal &&
+        movieModalClose
+    ) {
 
-    // Abrir modal
-    btnAddMovie.addEventListener('click', () => {
-        movieModal.classList.add('active');
-    });
+        btnAddMovie.addEventListener('click', () => {
 
-    // Cerrar con la X
-    movieModalClose.addEventListener('click', () => {
-        movieModal.classList.remove('active');
-    });
+    // Indicamos que vamos a crear una película nueva
+    peliculaEditandoId = null;
 
-    // Cerrar haciendo clic fuera
-    movieModal.addEventListener('click', (event) => {
-        if (event.target === movieModal) {
+    // Limpiamos el formulario
+    movieForm.reset();
+
+    // Limpiamos mensajes anteriores
+    movieFormError.textContent = '';
+
+    // Restauramos los textos del modal
+    document.querySelector('.movie-modal-content h2').textContent =
+        'Agregar película';
+
+    document.querySelector('.movie-save-button').textContent =
+        'Guardar película';
+
+    // Abrimos el modal
+    movieModal.classList.add('active');
+
+});
+
+
+        // Cerrar con X
+        movieModalClose.addEventListener('click', () => {
+
             movieModal.classList.remove('active');
-        }
-    });
 
-    // Cerrar con ESC
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-            movieModal.classList.remove('active');
-        }
-    });
-}
-// =========================================
-// CREAR NUEVA PELÍCULA
+        });
+
+
+        // Cerrar haciendo clic fuera
+        movieModal.addEventListener('click', (event) => {
+
+            if (event.target === movieModal) {
+
+                movieModal.classList.remove('active');
+
+            }
+
+        });
+
+
+        // Cerrar con ESC
+        document.addEventListener('keydown', (event) => {
+
+            if (event.key === 'Escape') {
+
+                movieModal.classList.remove('active');
+
+            }
+
+        });
+
+    }
+
+
+    // =========================================
+// CREAR / EDITAR PELÍCULA
 // =========================================
 
 if (movieForm) {
@@ -141,6 +293,7 @@ if (movieForm) {
 
         movieFormError.textContent = '';
 
+        // Validar campos
         if (
             !titulo ||
             !genero ||
@@ -148,36 +301,97 @@ if (movieForm) {
             !duracion ||
             !imagen
         ) {
+
             movieFormError.textContent =
                 'Todos los campos son obligatorios';
 
             return;
         }
 
-        const nuevaPelicula = {
-            id: Date.now(),
-            titulo: titulo,
-            genero: genero,
-            anio: anio,
-            duracion: duracion,
-            imagen: imagen
-        };
 
-        peliculas.push(nuevaPelicula);
+        // =========================================
+        // SI ESTAMOS EDITANDO
+        // =========================================
 
+        if (peliculaEditandoId !== null) {
+
+            const indice = peliculas.findIndex(
+                pelicula => pelicula.id === peliculaEditandoId
+            );
+
+            if (indice !== -1) {
+
+                peliculas[indice] = {
+                    id: peliculaEditandoId,
+                    titulo: titulo,
+                    genero: genero,
+                    anio: anio,
+                    duracion: duracion,
+                    imagen: imagen
+                };
+
+            }
+
+        } else {
+
+            // =========================================
+            // SI ESTAMOS CREANDO
+            // =========================================
+
+            const nuevaPelicula = {
+
+                id: Date.now(),
+                titulo: titulo,
+                genero: genero,
+                anio: anio,
+                duracion: duracion,
+                imagen: imagen
+
+            };
+
+            peliculas.push(nuevaPelicula);
+
+        }
+
+
+        // Guardar cambios
         localStorage.setItem(
             'peliculas',
             JSON.stringify(peliculas)
         );
 
+
+        // Actualizar tabla
         mostrarPeliculas(peliculas);
 
+
+        // Limpiar formulario
         movieForm.reset();
 
+
+        // Ya no estamos editando
+        peliculaEditandoId = null;
+
+
+        // Restaurar textos del modal
+        document.querySelector('.movie-modal-content h2').textContent =
+            'Agregar película';
+
+        document.querySelector('.movie-save-button').textContent =
+            'Guardar película';
+
+
+        // Cerrar modal
         movieModal.classList.remove('active');
+
     });
+
 }
 
+
+    // =========================================
+    // INICIAR
+    // =========================================
 
     cargarPeliculas();
 
