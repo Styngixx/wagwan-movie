@@ -355,10 +355,25 @@ body {
    DETALLE DE PELÍCULA
    ========================================= */
 .movie-detail-page {
+    position: relative;
+    isolation: isolate;
     max-width: 1200px;
     min-height: calc(100vh - 180px);
     margin: 0 auto;
     padding: 40px;
+}
+
+.movie-detail-page::before {
+    position: fixed;
+    z-index: -2;
+    content: "";
+    inset: 0;
+    background-image: linear-gradient(90deg, var(--bg-main) 0%, rgba(6, 13, 23, 0.9) 45%, rgba(6, 13, 23, 0.62) 100%), var(--detail-backdrop);
+    background-position: center;
+    background-size: cover;
+    filter: blur(8px);
+    opacity: 0.38;
+    transform: scale(1.05);
 }
 
 .back-link {
@@ -473,6 +488,23 @@ body {
 .movie-not-found p {
     color: var(--text-muted);
     margin-bottom: 25px;
+}
+
+.movie-recommendations {
+    margin-top: 45px;
+}
+
+.recommendations-heading {
+    margin-bottom: 18px;
+}
+
+.recommendations-heading h2 {
+    font-size: 1.4rem;
+    margin-top: 8px;
+}
+
+.recommendations-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 /* =========================================
@@ -721,6 +753,10 @@ body {
 
     .movie-detail-content h1 {
         font-size: 2rem;
+    }
+
+    .recommendations-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .favorites-page {

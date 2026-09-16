@@ -10,6 +10,47 @@ function saveFavoriteMovieIds(favoriteMovieIds) {
     localStorage.setItem(favoriteStorageKey, JSON.stringify(favoriteMovieIds));
 }
 
+function renderRecommendations(movie) {
+    const recommendationsElement = document.querySelector('#movie-recommendations');
+
+    if (!recommendationsElement) {
+        return;
+    }
+
+    const recommendations = movieCatalog
+        .filter(candidate => candidate.id !== movie.id)
+        .map(candidate => ({
+            movie: candidate,
+            sharedGenres: candidate.genres.filter(genre => movie.genres.includes(genre)).length
+        }))
+        .filter(item => item.sharedGenres > 0)
+        .sort((first, second) => second.sharedGenres - first.sharedGenres)
+        .slice(0, 4)
+        .map(item => item.movie);
+
+    if (recommendations.length === 0) {
+        recommendationsElement.innerHTML = '';
+        return;
+    }
+
+    recommendationsElement.innerHTML = `
+        <div class="recommendations-heading">
+            <span class="detail-kicker">PORQUE TE GUSTA ${movie.genres.join(' Y ').toUpperCase()}</span>
+            <h2>También te puede gustar</h2>
+        </div>
+        <div class="recommendations-grid grid-episodios">
+            ${recommendations.map(recommendedMovie => `
+                <a class="card-ep" href="/public/pages/pelicula.html?id=${recommendedMovie.id}">
+                    <div class="ep-img" style="background-image: url('${recommendedMovie.poster}')">
+                        <span class="ep-badge">★ ${recommendedMovie.rating}</span>
+                    </div>
+                    <div class="ep-title">${recommendedMovie.title} (${recommendedMovie.year})</div>
+                </a>
+            `).join('')}
+        </div>
+    `;
+}
+
 function updateFavoriteButton(movieId) {
     const favoriteButton = document.querySelector('#favorite-button');
 
@@ -86,7 +127,9 @@ function renderMovieDetail() {
         </div>
     `;
 
+    document.querySelector('.movie-detail-page').style.setProperty('--detail-backdrop', `url('${movie.poster}')`);
     initializeFavoriteButton(movie.id);
+    renderRecommendations(movie);
 }
 
 function initializeThemeToggle() {
