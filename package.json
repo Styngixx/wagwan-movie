@@ -1,0 +1,32 @@
+{
+  "name": "wagwan-movie",
+  "version": "1.0.0",
+  "description": "WAGWAN Movie es una aplicación web desarrollada como proyecto académico para visualizar y gestionar contenido relacionado con películas.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Styngixx/wagwan-movie.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Styngixx/wagwan-movie/issues"
+  },
+  "homepage": "https://github.com/Styngixx/wagwan-movie#readme",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.116.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+  
+}

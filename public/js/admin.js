@@ -105,6 +105,7 @@ function actualizarEstadisticas(listaPeliculas) {
     function mostrarPeliculas(listaPeliculas) {
 
         moviesTableBody.innerHTML = '';
+        
         actualizarEstadisticas(listaPeliculas);
 
         listaPeliculas.forEach(pelicula => {

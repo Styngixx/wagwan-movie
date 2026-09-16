@@ -1,122 +1,78 @@
-export const movieCatalog = [
-    {
-        id: 'avengers-doomsday',
-        title: 'Avengers: Doomsday',
-        year: 2026,
-        duration: '2h 20m',
-        rating: 8.7,
-        genres: ['Acción', 'Aventura'],
-        poster: '/public/media/avengers-doomsday.jpg',
-        synopsis: 'Los Vengadores se reúnen para enfrentar una amenaza que pone en riesgo el destino del mundo.'
-    },
-    {
-        id: 'michael-jackson',
-        title: 'Michael Jackson',
-        year: 2025,
-        duration: '2h 10m',
-        rating: 8.2,
-        genres: ['Drama', 'Musical'],
-        poster: '/public/media/michael-jackson.jpg',
-        synopsis: 'Un recorrido por la vida, la música y el legado de una de las figuras más importantes del pop.'
-    },
-    {
-        id: 'obsesion',
-        title: 'Obsesión',
-        year: 2025,
-        duration: '1h 55m',
-        rating: 7.8,
-        genres: ['Drama', 'Suspenso'],
-        poster: '/public/media/obsesion.webp',
-        synopsis: 'Una relación aparentemente perfecta comienza a revelar secretos que nadie estaba preparado para descubrir.'
-    },
-    {
-        id: 'pele-pelicula',
-        title: 'Pelé',
-        year: 2021,
-        duration: '1h 48m',
-        rating: 8.0,
-        genres: ['Drama', 'Deportes'],
-        poster: '/public/media/pele-pelicula.jpg',
-        synopsis: 'La historia del futbolista brasileño que transformó el deporte y se convirtió en una leyenda mundial.'
-    },
-    {
-        id: 'rapidos-y-furiosos-11',
-        title: 'Rápidos y Furiosos 11',
-        year: 2026,
-        duration: '2h 15m',
-        rating: 8.5,
-        genres: ['Acción', 'Aventura'],
-        poster: '/public/media/rapidos-y-furiosos.jpg',
-        synopsis: 'Dominic Toretto y su equipo se enfrentan a un nuevo enemigo que busca vengarse de su familia.'
-    },
-    {
-        id: 'scary-movie-6',
-        title: 'Scary Movie 6',
-        year: 2025,
-        duration: '1h 40m',
-        rating: 7.4,
-        genres: ['Comedia', 'Terror'],
-        poster: '/public/media/scary-movie-6.webp',
-        synopsis: 'Una nueva serie de sucesos inexplicables se convierte en el blanco de una parodia llena de humor.'
-    },
-    {
-        id: 'spiderman-brand-new-day',
-        title: 'Spider-Man: Brand New Day',
-        year: 2026,
-        duration: '2h 05m',
-        rating: 8.4,
-        genres: ['Acción', 'Aventura'],
-        poster: '/public/media/spiderman-brand-new-day.webp',
-        synopsis: 'Peter Parker intenta comenzar de nuevo mientras una amenaza inesperada vuelve a poner a la ciudad en peligro.'
-    },
-    {
-        id: 'el-gran-gatsby',
-        title: 'El Gran Gatsby',
-        year: 2013,
-        duration: '2h 23m',
-        rating: 7.3,
-        genres: ['Drama', 'Romance'],
-        poster: '/public/media/el-gran-gatsby.jpg',
-        synopsis: 'Un aspirante a escritor relata sus vivencias con su millonario vecino Jay Gatsby en los años 20.'
-    },
-    {
-        id: 'the-flash',
-        title: 'The Flash',
-        year: 2023,
-        duration: '2h 09m',
-        rating: 7.1,
-        genres: ['Ciencia Ficción', 'Acción'],
-        poster: '/public/media/the-flash.jpg',
-        synopsis: 'Barry Allen utiliza sus superpoderes para viajar en el tiempo y cambiar los eventos de su pasado.'
-    },
-    {
-        id: 'john-wick-5',
-        title: 'John Wick: Chapter 5',
-        year: 2026,
-        duration: '1h 45m',
-        rating: 8.8,
-        genres: ['Acción', 'Suspenso'],
-        poster: '/public/media/john-wick-5.jpg',
-        synopsis: 'El legendario asesino a sueldo se enfrenta a nuevos y letales desafíos en su lucha definitiva.'
-    },
-    {
-        id: 'black-adam',
-        title: 'Black Adam',
-        year: 2022,
-        duration: '2h 07m',
-        rating: 6.8,
-        genres: ['Acción', 'Aventura'],
-        poster: '/public/media/black-adam.jpg',
-        synopsis: 'Casi 5000 años después de recibir los poderes de los antiguos dioses, Black Adam es liberado.'
-    },
-    {
-        id: 'creed-iii',
-        title: 'Creed III',
-        year: 2023,
-        duration: '1h 04m',
-        rating: 7.2,
-        genres: ['Drama', 'Acción'],
-        poster: '/public/media/creed-iii.jpg',  
-        synopsis: 'Adonis Creed se enfrenta a un amigo de su infancia y antiguo prodigio del boxeo.'
+document.addEventListener('DOMContentLoaded', () => {
+    cargarPeliculas();
+});
+
+// Carga las películas desde la API de Node.js
+async function cargarPeliculas() {
+    try {
+        const response = await fetch('/api/peliculas');
+
+        if (!response.ok) {
+            throw new Error('Error al conectar con la base de datos');
+        }
+
+        const peliculas = await response.json();
+        renderizarCatalogo(peliculas);
+
+    } catch (error) {
+        console.error('Error:', error);
+
+        const contenedor = document.getElementById('movie-catalog');
+
+        if (contenedor) {
+            contenedor.innerHTML = `
+                <p class="error-mensaje">
+                    Error al cargar las películas. Intenta de nuevo más tarde.
+                </p>
+            `;
+        }
     }
-];
+}
+
+// Renderiza las películas en el catálogo
+function renderizarCatalogo(peliculas) {
+    const contenedor = document.getElementById('movie-catalog');
+
+    if (!contenedor) {
+        console.error('No se encontró el contenedor #movie-catalog');
+        return;
+    }
+
+    contenedor.innerHTML = '';
+
+    peliculas.forEach(pelicula => {
+        const cardHTML = `
+            <div class="movie-card">
+                <img
+                    src="${pelicula.url_portada}"
+                    alt="${pelicula.titulo}"
+                    class="movie-img"
+                >
+
+                <div class="movie-info">
+                    <h3>${pelicula.titulo}</h3>
+
+                    <p>Estreno: ${pelicula.anio_estreno}</p>
+
+                    <p>
+                        Géneros:
+                        ${
+                            pelicula.generos
+                                ? pelicula.generos.join(', ')
+                                : 'N/A'
+                        }
+                    </p>
+
+                    <a
+                        href="/pages/pelicula.html?id=${pelicula.id}"
+                        class="btn-ver"
+                    >
+                        Ver Detalles
+                    </a>
+                </div>
+            </div>
+        `;
+
+        contenedor.insertAdjacentHTML('beforeend', cardHTML);
+    });
+}
