@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis favoritos | WAGWAN</title>
+    <link rel="stylesheet" href="/public/css/index.css">
+</head>
+<body class="dark-mode">
+    <header class="navbar">
+        <a class="logo" href="/index.html">
+            <span class="play-icon">▶</span> WAGWAN
+        </a>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/index.html#movie-catalog">Películas</a>
+            <a href="/public/pages/favoritos.html" aria-current="page">Favoritos</a>
+            <a href="#">Series</a>
+            <a href="#">Animes</a>
+        </nav>
+        <div class="user-actions">
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar...">
+            </div>
+            <button class="btn-login" type="button">Registroo</button>
+            <div class="theme-toggle" title="Cambiar Tema">☀️</div>
+        </div>
+    </header>
+
+    <main class="favorites-page">
+        <div class="favorites-heading">
+            <span class="detail-kicker">MI COLECCIÓN</span>
+            <h1>Películas favoritas</h1>
+            <p>Encuentra aquí las películas que guardaste para ver después.</p>
+        </div>
+        <section class="favorites-content" id="favorites-content">
+            <!-- Los favoritos se generan desde public/js/favorites.js -->
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>&copy; 2026 WAGWAN. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="/public/js/favorites.js"></script>
+</body>
+</html>

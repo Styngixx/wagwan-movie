@@ -46,8 +46,10 @@ body {
    ========================================= */
 .navbar {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
+    gap: 12px;
     padding: 15px 40px;
     background-color: var(--bg-main);
     position: sticky;
@@ -66,7 +68,10 @@ body {
 
 .navbar nav {
     display: flex;
+    flex: 1;
+    flex-wrap: wrap;
     gap: 20px;
+    justify-content: center;
 }
 
 .navbar nav a {
@@ -187,6 +192,30 @@ body {
     border-radius: 12px;
 }
 
+.movie-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 15px 0 20px;
+}
+
+.movie-filter {
+    background-color: var(--card-bg);
+    color: var(--text-muted);
+    border: 1px solid var(--badge-bg);
+    border-radius: 4px;
+    padding: 7px 12px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.movie-filter:hover,
+.movie-filter.active {
+    background-color: var(--accent-blue);
+    color: white;
+}
+
 /* =========================================
    GRILLA PROMOCIONES (Estilo Poster)
    ========================================= */
@@ -266,6 +295,8 @@ body {
     flex-direction: column;
     gap: 8px;
     cursor: pointer;
+    color: inherit;
+    text-decoration: none;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -305,9 +336,248 @@ body {
     font-weight: bold;
 }
 
+.favorite-indicator {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    color: #f05a67;
+    font-size: 1.25rem;
+    line-height: 1;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+}
+
 .ep-title {
     font-size: 0.85rem;
     color: var(--text-muted);
+}
+
+/* =========================================
+   DETALLE DE PELÍCULA
+   ========================================= */
+.movie-detail-page {
+    position: relative;
+    isolation: isolate;
+    max-width: 1200px;
+    min-height: calc(100vh - 180px);
+    margin: 0 auto;
+    padding: 40px;
+}
+
+.movie-detail-page::before {
+    position: fixed;
+    z-index: -2;
+    content: "";
+    inset: 0;
+    background-image: linear-gradient(90deg, var(--bg-main) 0%, rgba(6, 13, 23, 0.9) 45%, rgba(6, 13, 23, 0.62) 100%), var(--detail-backdrop);
+    background-position: center;
+    background-size: cover;
+    filter: blur(8px);
+    opacity: 0.38;
+    transform: scale(1.05);
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 25px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    color: var(--text-main);
+}
+
+.movie-detail {
+    display: grid;
+    grid-template-columns: minmax(260px, 380px) 1fr;
+    gap: 45px;
+    align-items: center;
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+}
+
+.movie-detail-poster {
+    min-height: 450px;
+    border-radius: 8px;
+    background-position: center;
+    background-size: cover;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.movie-detail-content h1 {
+    font-size: 2.5rem;
+    margin: 8px 0 18px;
+}
+
+.detail-kicker {
+    color: var(--accent-blue);
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.detail-meta,
+.detail-genres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.detail-rating,
+.detail-genres span {
+    background-color: var(--badge-bg);
+    color: var(--text-main);
+    border-radius: 4px;
+    padding: 5px 9px;
+}
+
+.detail-rating {
+    color: #f5b041;
+    font-weight: bold;
+}
+
+.movie-detail-content h2 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+.detail-synopsis {
+    max-width: 650px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 28px;
+}
+
+.favorite-button {
+    display: block;
+    margin-bottom: 15px;
+    padding: 10px 16px;
+    border: 1px solid var(--badge-bg);
+    border-radius: 4px;
+    background-color: transparent;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.favorite-button:hover,
+.favorite-button.is-favorite {
+    border-color: #f05a67;
+    background-color: rgba(240, 90, 103, 0.12);
+    color: #f05a67;
+}
+
+.movie-not-found {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.movie-not-found h1 {
+    margin-bottom: 12px;
+}
+
+.movie-not-found p {
+    color: var(--text-muted);
+    margin-bottom: 25px;
+}
+
+.movie-recommendations {
+    margin-top: 45px;
+}
+
+.recommendations-heading {
+    margin-bottom: 18px;
+}
+
+.recommendations-heading h2 {
+    font-size: 1.4rem;
+    margin-top: 8px;
+}
+
+.recommendations-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* =========================================
+   PÁGINA DE FAVORITOS
+   ========================================= */
+.favorites-page {
+    max-width: 1600px;
+    min-height: calc(100vh - 180px);
+    margin: 0 auto;
+    padding: 45px 40px;
+}
+
+.favorites-heading {
+    margin-bottom: 30px;
+}
+
+.favorites-heading h1 {
+    font-size: 2.2rem;
+    margin: 8px 0 10px;
+}
+
+.favorites-heading p,
+.empty-favorites p {
+    color: var(--text-muted);
+}
+
+.favorites-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.favorite-card {
+    min-width: 0;
+}
+
+.remove-favorite {
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px 10px;
+    border: 1px solid var(--badge-bg);
+    border-radius: 4px;
+    background-color: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.78rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.remove-favorite:hover {
+    background-color: rgba(240, 90, 103, 0.12);
+    color: #f05a67;
+}
+
+.empty-favorites {
+    padding: 80px 20px;
+    text-align: center;
+    background-color: var(--card-bg);
+    border-radius: 12px;
+}
+
+.empty-favorites-icon {
+    color: var(--text-muted);
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.empty-favorites h2 {
+    margin-bottom: 10px;
+}
+
+.empty-favorites .btn-primary {
+    display: inline-flex;
+    margin-top: 25px;
+    text-decoration: none;
 }
 
 /* =========================================
@@ -452,8 +722,49 @@ body {
 }
 
 @media (max-width: 768px) {
+    .navbar {
+        padding: 15px 20px;
+    }
+
+    .navbar nav {
+        flex-basis: 100%;
+        order: 3;
+        gap: 12px;
+        justify-content: flex-start;
+    }
+
     .footer-container {
         grid-template-columns: 1fr 1fr;
+    }
+
+    .movie-detail-page {
+        padding: 25px 20px;
+    }
+
+    .movie-detail {
+        grid-template-columns: 1fr;
+        gap: 25px;
+        padding: 20px;
+    }
+
+    .movie-detail-poster {
+        min-height: 360px;
+    }
+
+    .movie-detail-content h1 {
+        font-size: 2rem;
+    }
+
+    .recommendations-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .favorites-page {
+        padding: 30px 20px;
+    }
+
+    .favorites-heading h1 {
+        font-size: 1.8rem;
     }
 }
 

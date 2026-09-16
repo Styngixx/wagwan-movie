@@ -13,11 +13,12 @@
             <span class="play-icon">▶</span> WAGWAN
         </div>
         <nav>
-            <a href="#">Inicio</a>
+            <a href="/index.html">Inicio</a>
             <a href="#">Géneros</a>
-            <a href="#">Películas ⌄</a>
+            <a href="/index.html#movie-catalog">Películas ⌄</a>
             <a href="#">Series ⌄</a>
             <a href="#">Animes ⌄</a>
+            <a href="/public/pages/favoritos.html">Favoritos</a>
             <a href="#" class="admin-link" id="adminDashboardLink">Dashboard</a>
         </nav>
         <div class="user-actions">
@@ -145,43 +146,21 @@
                 </div>
             </section>
 
-            <!-- Sección: Episodios -->
+            <!-- Sección: Catálogo de películas -->
             <section class="section-block">
-                <h2>Episodios</h2>
-                <div class="grid-episodios">
-                    <!-- Episodio 1 al 8 -->
-                    <div class="card-ep">
-                        <div class="ep-img img-1"><span class="ep-badge">7x1</span></div>
-                        <div class="ep-title">Wagwan: Temporada 7...</div>
-                    </div>
-                    <div class="card-ep">
-                        <div class="ep-img img-2"><span class="ep-badge">7x2</span></div>
-                        <div class="ep-title">Wagwan: Temporada 7...</div>
-                    </div>
-                    <div class="card-ep">
-                        <div class="ep-img img-3"><span class="ep-badge">7x3</span></div>
-                        <div class="ep-title">Wagwan: Temporada 7...</div>
-                    </div>
-                    <div class="card-ep">
-                        <div class="ep-img img-4"><span class="ep-badge">7x4</span></div>
-                        <div class="ep-title">Wagwan: Temporada 7...</div>
-                    </div>
-                    <div class="card-ep">
-                        <div class="ep-img img-5"><span class="ep-badge">8x1</span></div>
-                        <div class="ep-title">Cyberpunk: Temporada 8...</div>
-                    </div>
-                    <div class="card-ep">
-                        <div class="ep-img img-6"><span class="ep-badge">8x2</span></div>
-                        <div class="ep-title">Cyberpunk: Temporada 8...</div>
-                    </div>
-                    <div class="card-ep">
-                        <div class="ep-img img-7"><span class="ep-badge">8x3</span></div>
-                        <div class="ep-title">Cyberpunk: Temporada 8...</div>
-                    </div>
-                    <div class="card-ep">
-                        <div class="ep-img img-8"><span class="ep-badge">8x4</span></div>
-                        <div class="ep-title">Cyberpunk: Temporada 8...</div>
-                    </div>
+                <h2>Películas destacadas</h2>
+                <div class="movie-filters" aria-label="Filtrar películas por categoría">
+                    <button class="movie-filter active" type="button" data-category="Todas">Todas</button>
+                    <button class="movie-filter" type="button" data-category="Acción">Acción</button>
+                    <button class="movie-filter" type="button" data-category="Aventura">Aventura</button>
+                    <button class="movie-filter" type="button" data-category="Drama">Drama</button>
+                    <button class="movie-filter" type="button" data-category="Romance">Romance</button>
+                    <button class="movie-filter" type="button" data-category="Comedia">Comedia</button>
+                    <button class="movie-filter" type="button" data-category="Terror">Terror</button>
+                    <button class="movie-filter" type="button" data-category="Suspenso">Suspenso</button>
+                </div>
+                <div class="grid-episodios" id="movie-catalog">
+                    <!-- Las películas se generan desde public/js/index.js -->
                 </div>
             </section>
         </main>
@@ -254,9 +233,10 @@
 
         <div class="footer-col">
             <h4>Navegación</h4>
-            <a href="#">Inicio</a>
+            <a href="/index.html">Inicio</a>
             <a href="#">Géneros</a>
-            <a href="#">Películas</a>
+            <a href="/index.html#movie-catalog">Películas</a>
+            <a href="/public/pages/favoritos.html">Favoritos</a>
             <a href="#">Series</a>
             <a href="#">Animes</a>
         </div>
@@ -284,6 +264,6 @@
 </footer>
 
 
-    <script src="/public/js/index.js"></script>
+    <script type="module" src="/public/js/index.js"></script>
 </body>
 </html>

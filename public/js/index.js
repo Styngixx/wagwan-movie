@@ -1,4 +1,49 @@
+import { movieCatalog } from './movies.js';
+
+function getFavoriteMovieIds() {
+    return JSON.parse(localStorage.getItem('favoriteMovies') || '[]');
+}
+
+function renderMovieCatalog(category = 'Todas') {
+    const catalogElement = document.querySelector('#movie-catalog');
+
+    if (!catalogElement) {
+        return;
+    }
+
+    const filteredMovies = category === 'Todas'
+        ? movieCatalog
+        : movieCatalog.filter(movie => movie.genres.includes(category));
+
+    if (filteredMovies.length === 0) {
+        catalogElement.innerHTML = '<p class="empty-catalog">No hay películas disponibles en esta categoría.</p>';
+        return;
+    }
+
+    const favoriteMovieIds = getFavoriteMovieIds();
+
+    catalogElement.innerHTML = filteredMovies.map(movie => `
+        <a class="card-ep" href="/public/pages/pelicula.html?id=${movie.id}" data-movie-id="${movie.id}">
+            <div class="ep-img" style="background-image: url('${movie.poster}')">
+                <span class="ep-badge">★ ${movie.rating}</span>
+                ${favoriteMovieIds.includes(movie.id) ? '<span class="favorite-indicator" title="Película favorita">♥</span>' : ''}
+            </div>
+            <div class="ep-title">${movie.title} (${movie.year})</div>
+        </a>
+    `).join('');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    renderMovieCatalog();
+
+    const movieFilters = document.querySelectorAll('.movie-filter');
+    movieFilters.forEach(filterButton => {
+        filterButton.addEventListener('click', () => {
+            movieFilters.forEach(button => button.classList.remove('active'));
+            filterButton.classList.add('active');
+            renderMovieCatalog(filterButton.dataset.category);
+        });
+    });
     
     const themeToggle = document.querySelector('.theme-toggle');
     const body = document.body;
@@ -30,13 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("▶ Iniciando película...");
         });
     }
-
-    const episodeCards = document.querySelectorAll('.card-ep');
-    episodeCards.forEach(card => {
-        card.addEventListener('click', () => {
-            alert("Cargando episodio...");
-        });
-    });
 
     // =========================================
 // MODAL LOGIN ADMINISTRADOR
