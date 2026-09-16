@@ -170,6 +170,104 @@
 
     </div>
 
+    <!-- =========================================
+     MODAL AGREGAR PELÍCULA
+========================================== -->
+
+<div class="movie-modal" id="movieModal">
+
+    <div class="movie-modal-content">
+
+        <button class="movie-modal-close" id="movieModalClose">
+            &times;
+        </button>
+
+        <h2>Agregar película</h2>
+
+        <p class="movie-modal-description">
+            Completa los datos de la nueva película.
+        </p>
+
+        <form id="movieForm">
+
+            <div class="movie-form-group">
+                <label for="movieTitle">Título</label>
+
+                <input
+                    type="text"
+                    id="movieTitle"
+                    placeholder="Ej: Interstellar"
+                    required
+                >
+            </div>
+
+            <div class="movie-form-group">
+                <label for="movieGenre">Género</label>
+
+                <select id="movieGenre" required>
+                    <option value="">Seleccionar género</option>
+                    <option value="Acción">Acción</option>
+                    <option value="Aventura">Aventura</option>
+                    <option value="Comedia">Comedia</option>
+                    <option value="Drama">Drama</option>
+                    <option value="Romance">Romance</option>
+                    <option value="Terror">Terror</option>
+                    <option value="Ciencia ficción">Ciencia ficción</option>
+                    <option value="Animación">Animación</option>
+                </select>
+            </div>
+
+            <div class="movie-form-row">
+
+                <div class="movie-form-group">
+                    <label for="movieYear">Año</label>
+
+                    <input
+                        type="number"
+                        id="movieYear"
+                        min="1900"
+                        max="2100"
+                        placeholder="2026"
+                        required
+                    >
+                </div>
+
+                <div class="movie-form-group">
+                    <label for="movieDuration">Duración</label>
+
+                    <input
+                        type="text"
+                        id="movieDuration"
+                        placeholder="2h 15m"
+                        required
+                    >
+                </div>
+
+            </div>
+
+            <div class="movie-form-group">
+                <label for="movieImage">Imagen</label>
+
+                <input
+                    type="text"
+                    id="movieImage"
+                    placeholder="../media/nombre-imagen.jpg"
+                    required
+                >
+            </div>
+
+            <p class="movie-form-error" id="movieFormError"></p>
+
+            <button type="submit" class="movie-save-button">
+                Guardar película
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
 
     <script src="../js/admin.js"></script>
 

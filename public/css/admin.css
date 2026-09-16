@@ -379,3 +379,221 @@ body {
         gap: 15px;
     }
 }
+
+/* =========================================
+   MODAL AGREGAR PELÍCULA
+   ========================================= */
+
+.movie-modal {
+    position: fixed;
+    inset: 0;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(3, 8, 15, 0.78);
+    backdrop-filter: blur(6px);
+
+    z-index: 2000;
+
+    padding: 20px;
+}
+
+.movie-modal.active {
+    display: flex;
+}
+
+.movie-modal-content {
+    position: relative;
+
+    width: 100%;
+    max-width: 500px;
+
+    max-height: 90vh;
+    overflow-y: auto;
+
+    padding: 30px;
+
+    background: #0d1829;
+
+    border: 1px solid #1e293b;
+    border-radius: 16px;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.55),
+        0 0 30px rgba(37, 99, 235, 0.08);
+}
+
+
+/* Botón cerrar */
+
+.movie-modal-close {
+    position: absolute;
+
+    top: 15px;
+    right: 18px;
+
+    border: none;
+    background: transparent;
+
+    color: #8b9bb4;
+
+    font-size: 28px;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.movie-modal-close:hover {
+    color: #f5c542;
+
+    transform: scale(1.1);
+}
+
+
+/* Títulos */
+
+.movie-modal-content h2 {
+    margin-bottom: 8px;
+
+    font-size: 22px;
+}
+
+.movie-modal-description {
+    margin-bottom: 25px;
+
+    color: #8b9bb4;
+
+    font-size: 13px;
+}
+
+
+/* =========================================
+   FORMULARIO
+   ========================================= */
+
+.movie-form-group {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    margin-bottom: 18px;
+}
+
+.movie-form-group label {
+    font-size: 13px;
+    font-weight: 600;
+
+    color: #d7dfeb;
+}
+
+.movie-form-group input,
+.movie-form-group select {
+    width: 100%;
+
+    padding: 12px 13px;
+
+    border: 1px solid #26354d;
+    border-radius: 9px;
+
+    background: #060d17;
+
+    color: #ffffff;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.movie-form-group input::placeholder {
+    color: #5e6d82;
+}
+
+.movie-form-group input:focus,
+.movie-form-group select:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+
+/* Año + duración en una fila */
+
+.movie-form-row {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 15px;
+}
+
+
+/* Error */
+
+.movie-form-error {
+    min-height: 18px;
+
+    margin-bottom: 8px;
+
+    text-align: center;
+
+    color: #ff6b6b;
+
+    font-size: 12px;
+}
+
+
+/* Guardar */
+
+.movie-save-button {
+    width: 100%;
+
+    padding: 12px;
+
+    border: none;
+    border-radius: 9px;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.movie-save-button:hover {
+    background: #1d4ed8;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 20px rgba(37, 99, 235, 0.25);
+}
+
+
+/* Responsive */
+
+@media (max-width: 550px) {
+
+    .movie-modal-content {
+        padding: 25px 20px;
+    }
+
+    .movie-form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+}
