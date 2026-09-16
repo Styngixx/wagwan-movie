@@ -1,13 +1,22 @@
 import { movieCatalog } from './movies.js';
 
-function renderMovieCatalog() {
+function renderMovieCatalog(category = 'Todas') {
     const catalogElement = document.querySelector('#movie-catalog');
 
     if (!catalogElement) {
         return;
     }
 
-    catalogElement.innerHTML = movieCatalog.map(movie => `
+    const filteredMovies = category === 'Todas'
+        ? movieCatalog
+        : movieCatalog.filter(movie => movie.genres.includes(category));
+
+    if (filteredMovies.length === 0) {
+        catalogElement.innerHTML = '<p class="empty-catalog">No hay películas disponibles en esta categoría.</p>';
+        return;
+    }
+
+    catalogElement.innerHTML = filteredMovies.map(movie => `
         <article class="card-ep" data-movie-id="${movie.id}">
             <div class="ep-img" style="background-image: url('${movie.poster}')">
                 <span class="ep-badge">★ ${movie.rating}</span>
@@ -17,8 +26,28 @@ function renderMovieCatalog() {
     `).join('');
 }
 
+function addMovieCardListeners() {
+    const movieCards = document.querySelectorAll('.card-ep');
+    movieCards.forEach(card => {
+        card.addEventListener('click', () => {
+            alert("Cargando película...");
+        });
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     renderMovieCatalog();
+    addMovieCardListeners();
+
+    const movieFilters = document.querySelectorAll('.movie-filter');
+    movieFilters.forEach(filterButton => {
+        filterButton.addEventListener('click', () => {
+            movieFilters.forEach(button => button.classList.remove('active'));
+            filterButton.classList.add('active');
+            renderMovieCatalog(filterButton.dataset.category);
+            addMovieCardListeners();
+        });
+    });
     
     const themeToggle = document.querySelector('.theme-toggle');
     const body = document.body;
@@ -50,13 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("▶ Iniciando película...");
         });
     }
-
-    const movieCards = document.querySelectorAll('.card-ep');
-    movieCards.forEach(card => {
-        card.addEventListener('click', () => {
-            alert("Cargando película...");
-        });
-    });
 
     // =========================================
 // MODAL LOGIN ADMINISTRADOR

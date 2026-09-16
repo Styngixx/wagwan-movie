@@ -187,6 +187,30 @@ body {
     border-radius: 12px;
 }
 
+.movie-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 15px 0 20px;
+}
+
+.movie-filter {
+    background-color: var(--card-bg);
+    color: var(--text-muted);
+    border: 1px solid var(--badge-bg);
+    border-radius: 4px;
+    padding: 7px 12px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.movie-filter:hover,
+.movie-filter.active {
+    background-color: var(--accent-blue);
+    color: white;
+}
+
 /* =========================================
    GRILLA PROMOCIONES (Estilo Poster)
    ========================================= */
