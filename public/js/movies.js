@@ -68,5 +68,55 @@ export const movieCatalog = [
         genres: ['Acción', 'Aventura'],
         poster: '/public/media/spiderman-brand-new-day.webp',
         synopsis: 'Peter Parker intenta comenzar de nuevo mientras una amenaza inesperada vuelve a poner a la ciudad en peligro.'
+    },
+    {
+        id: 'el-gran-gatsby',
+        title: 'El Gran Gatsby',
+        year: 2013,
+        duration: '2h 23m',
+        rating: 7.3,
+        genres: ['Drama', 'Romance'],
+        poster: '/public/media/el-gran-gatsby.jpg',
+        synopsis: 'Un aspirante a escritor relata sus vivencias con su millonario vecino Jay Gatsby en los años 20.'
+    },
+    {
+        id: 'the-flash',
+        title: 'The Flash',
+        year: 2023,
+        duration: '2h 09m',
+        rating: 7.1,
+        genres: ['Ciencia Ficción', 'Acción'],
+        poster: '/public/media/the-flash.jpg',
+        synopsis: 'Barry Allen utiliza sus superpoderes para viajar en el tiempo y cambiar los eventos de su pasado.'
+    },
+    {
+        id: 'john-wick-5',
+        title: 'John Wick: Chapter 5',
+        year: 2026,
+        duration: '1h 45m',
+        rating: 8.8,
+        genres: ['Acción', 'Suspenso'],
+        poster: '/public/media/john-wick-5.jpg',
+        synopsis: 'El legendario asesino a sueldo se enfrenta a nuevos y letales desafíos en su lucha definitiva.'
+    },
+    {
+        id: 'black-adam',
+        title: 'Black Adam',
+        year: 2022,
+        duration: '2h 07m',
+        rating: 6.8,
+        genres: ['Acción', 'Aventura'],
+        poster: '/public/media/black-adam.jpg',
+        synopsis: 'Casi 5000 años después de recibir los poderes de los antiguos dioses, Black Adam es liberado.'
+    },
+    {
+        id: 'creed-iii',
+        title: 'Creed III',
+        year: 2023,
+        duration: '1h 04m',
+        rating: 7.2,
+        genres: ['Drama', 'Acción'],
+        poster: '/public/media/creed-iii.jpg',  
+        synopsis: 'Adonis Creed se enfrenta a un amigo de su infancia y antiguo prodigio del boxeo.'
     }
 ];
