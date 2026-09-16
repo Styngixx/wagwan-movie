@@ -4,19 +4,30 @@ function getFavoriteMovieIds() {
     return JSON.parse(localStorage.getItem('favoriteMovies') || '[]');
 }
 
-function renderMovieCatalog(category = 'Todas') {
+// Modificamos el render para que también acepte un término de búsqueda opcional
+function renderMovieCatalog(category = 'Todas', searchQuery = '') {
     const catalogElement = document.querySelector('#movie-catalog');
 
     if (!catalogElement) {
         return;
     }
 
-    const filteredMovies = category === 'Todas'
+    // 1. Filtramos primero por categoría
+    let filteredMovies = category === 'Todas'
         ? movieCatalog
         : movieCatalog.filter(movie => movie.genres.includes(category));
 
+    // 2. Si hay texto en la barra de búsqueda, filtramos también por título o género
+    if (searchQuery.trim() !== '') {
+        const query = searchQuery.toLowerCase().trim();
+        filteredMovies = filteredMovies.filter(movie => 
+            movie.title.toLowerCase().includes(query) ||
+            movie.genres.some(genre => genre.toLowerCase().includes(query))
+        );
+    }
+
     if (filteredMovies.length === 0) {
-        catalogElement.innerHTML = '<p class="empty-catalog">No hay películas disponibles en esta categoría.</p>';
+        catalogElement.innerHTML = '<p class="empty-catalog">No hay películas disponibles con esos criterios.</p>';
         return;
     }
 
@@ -36,14 +47,33 @@ function renderMovieCatalog(category = 'Todas') {
 document.addEventListener('DOMContentLoaded', () => {
     renderMovieCatalog();
 
+    // Mantener la categoría activa actual para que la búsqueda no la borre
+    let currentCategory = 'Todas';
+
     const movieFilters = document.querySelectorAll('.movie-filter');
     movieFilters.forEach(filterButton => {
         filterButton.addEventListener('click', () => {
             movieFilters.forEach(button => button.classList.remove('active'));
             filterButton.classList.add('active');
-            renderMovieCatalog(filterButton.dataset.category);
+            currentCategory = filterButton.dataset.category;
+            
+            const searchInput = document.querySelector('input[type="search"], input[placeholder*="Buscar"], .search-bar input');
+            const query = searchInput ? searchInput.value : '';
+            renderMovieCatalog(currentCategory, query);
         });
     });
+
+    // =========================================
+    // BÚSQUEDA DINÁMICA EN TIEMPO REAL
+    // =========================================
+    const searchInput = document.querySelector('input[type="search"], input[placeholder*="Buscar"], .search-bar input');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value;
+            renderMovieCatalog(currentCategory, query);
+        });
+    }
     
     const themeToggle = document.querySelector('.theme-toggle');
     const body = document.body;
@@ -77,105 +107,103 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =========================================
-// MODAL LOGIN ADMINISTRADOR
-// =========================================
+    // MODAL LOGIN ADMINISTRADOR
+    // =========================================
 
-const adminDashboardLink = document.getElementById('adminDashboardLink');
-const adminModal = document.getElementById('adminModal');
-const adminModalClose = document.getElementById('adminModalClose');
+    const adminDashboardLink = document.getElementById('adminDashboardLink');
+    const adminModal = document.getElementById('adminModal');
+    const adminModalClose = document.getElementById('adminModalClose');
 
-if (adminDashboardLink && adminModal && adminModalClose) {
+    if (adminDashboardLink && adminModal && adminModalClose) {
 
-    // Abrir modal
-    adminDashboardLink.addEventListener('click', (event) => {
-        event.preventDefault();
-        adminModal.classList.add('active');
-    });
+        // Abrir modal
+        adminDashboardLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            adminModal.classList.add('active');
+        });
 
-    // Cerrar con la X
-    adminModalClose.addEventListener('click', () => {
-        adminModal.classList.remove('active');
-    });
-
-    // Cerrar haciendo clic fuera de la ventana
-    adminModal.addEventListener('click', (event) => {
-        if (event.target === adminModal) {
+        // Cerrar con la X
+        adminModalClose.addEventListener('click', () => {
             adminModal.classList.remove('active');
-        }
-    });
+        });
 
-    // Cerrar con ESC
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-            adminModal.classList.remove('active');
-        }
-    });
-}
-
-// =========================================
-// VALIDAR LOGIN DEL ADMINISTRADOR
-// =========================================
-
-const adminLoginForm = document.getElementById('adminLoginForm');
-const adminUsuario = document.getElementById('adminUsuario');
-const adminPassword = document.getElementById('adminPassword');
-const adminLoginError = document.getElementById('adminLoginError');
-
-if (adminLoginForm) {
-
-    adminLoginForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        const usuarioIngresado = adminUsuario.value.trim();
-        const passwordIngresado = adminPassword.value.trim();
-
-        adminLoginError.textContent = '';
-
-        try {
-
-            const response = await fetch('public/data/admins.json');
-
-            if (!response.ok) {
-                throw new Error('No se pudo cargar el archivo de administradores');
+        // Cerrar haciendo clic fuera de la ventana
+        adminModal.addEventListener('click', (event) => {
+            if (event.target === adminModal) {
+                adminModal.classList.remove('active');
             }
+        });
 
-            const admins = await response.json();
+        // Cerrar con ESC
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                adminModal.classList.remove('active');
+            }
+        });
+    }
 
-            const adminValido = admins.find(admin =>
-                admin.usuario === usuarioIngresado &&
-                admin.password === passwordIngresado
-            );
+    // =========================================
+    // VALIDAR LOGIN DEL ADMINISTRADOR
+    // =========================================
 
-            if (adminValido) {
+    const adminLoginForm = document.getElementById('adminLoginForm');
+    const adminUsuario = document.getElementById('adminUsuario');
+    const adminPassword = document.getElementById('adminPassword');
+    const adminLoginError = document.getElementById('adminLoginError');
 
-                // Guardamos la sesión del administrador
-                localStorage.setItem('adminLogged', 'true');
+    if (adminLoginForm) {
 
-                adminLoginError.style.color = '#4ade80';
-                adminLoginError.textContent = 'Acceso correcto';
+        adminLoginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
 
-                // Esperamos un momento y entramos al dashboard
-                setTimeout(() => {
-                    window.location.href = 'public/pages/admin.html';
-                }, 800);
+            const usuarioIngresado = adminUsuario.value.trim();
+            const passwordIngresado = adminPassword.value.trim();
 
-            
+            adminLoginError.textContent = '';
 
-            } else {
+            try {
+
+                const response = await fetch('public/data/admins.json');
+
+                if (!response.ok) {
+                    throw new Error('No se pudo cargar el archivo de administradores');
+                }
+
+                const admins = await response.json();
+
+                const adminValido = admins.find(admin =>
+                    admin.usuario === usuarioIngresado &&
+                    admin.password === passwordIngresado
+                );
+
+                if (adminValido) {
+
+                    // Guardamos la sesión del administrador
+                    localStorage.setItem('adminLogged', 'true');
+
+                    adminLoginError.style.color = '#4ade80';
+                    adminLoginError.textContent = 'Acceso correcto';
+
+                    // Esperamos un momento y entramos al dashboard
+                    setTimeout(() => {
+                        window.location.href = 'public/pages/admin.html';
+                    }, 800);
+
+                } else {
+
+                    adminLoginError.style.color = '#ff6b6b';
+                    adminLoginError.textContent = 'Usuario o contraseña incorrectos';
+
+                }
+
+            } catch (error) {
+
+                console.error(error);
 
                 adminLoginError.style.color = '#ff6b6b';
-                adminLoginError.textContent = 'Usuario o contraseña incorrectos';
+                adminLoginError.textContent = 'Error al validar las credenciales';
 
             }
-
-        } catch (error) {
-
-            console.error(error);
-
-            adminLoginError.style.color = '#ff6b6b';
-            adminLoginError.textContent = 'Error al validar las credenciales';
-
-        }
-    });
-}
+        });
+    }
 });
