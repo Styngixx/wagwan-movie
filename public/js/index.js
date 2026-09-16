@@ -1,5 +1,9 @@
 import { movieCatalog } from './movies.js';
 
+function getFavoriteMovieIds() {
+    return JSON.parse(localStorage.getItem('favoriteMovies') || '[]');
+}
+
 function renderMovieCatalog(category = 'Todas') {
     const catalogElement = document.querySelector('#movie-catalog');
 
@@ -16,10 +20,13 @@ function renderMovieCatalog(category = 'Todas') {
         return;
     }
 
+    const favoriteMovieIds = getFavoriteMovieIds();
+
     catalogElement.innerHTML = filteredMovies.map(movie => `
         <a class="card-ep" href="/public/pages/pelicula.html?id=${movie.id}" data-movie-id="${movie.id}">
             <div class="ep-img" style="background-image: url('${movie.poster}')">
                 <span class="ep-badge">★ ${movie.rating}</span>
+                ${favoriteMovieIds.includes(movie.id) ? '<span class="favorite-indicator" title="Película favorita">♥</span>' : ''}
             </div>
             <div class="ep-title">${movie.title} (${movie.year})</div>
         </a>

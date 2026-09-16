@@ -1,5 +1,51 @@
 import { movieCatalog } from './movies.js';
 
+const favoriteStorageKey = 'favoriteMovies';
+
+function getFavoriteMovieIds() {
+    return JSON.parse(localStorage.getItem(favoriteStorageKey) || '[]');
+}
+
+function saveFavoriteMovieIds(favoriteMovieIds) {
+    localStorage.setItem(favoriteStorageKey, JSON.stringify(favoriteMovieIds));
+}
+
+function updateFavoriteButton(movieId) {
+    const favoriteButton = document.querySelector('#favorite-button');
+
+    if (!favoriteButton) {
+        return;
+    }
+
+    const isFavorite = getFavoriteMovieIds().includes(movieId);
+    favoriteButton.classList.toggle('is-favorite', isFavorite);
+    favoriteButton.innerHTML = isFavorite ? '♥ Quitar de favoritos' : '♡ Agregar a favoritos';
+    favoriteButton.setAttribute('aria-pressed', String(isFavorite));
+}
+
+function initializeFavoriteButton(movieId) {
+    const favoriteButton = document.querySelector('#favorite-button');
+
+    if (!favoriteButton) {
+        return;
+    }
+
+    updateFavoriteButton(movieId);
+    favoriteButton.addEventListener('click', () => {
+        const favoriteMovieIds = getFavoriteMovieIds();
+        const favoriteIndex = favoriteMovieIds.indexOf(movieId);
+
+        if (favoriteIndex === -1) {
+            favoriteMovieIds.push(movieId);
+        } else {
+            favoriteMovieIds.splice(favoriteIndex, 1);
+        }
+
+        saveFavoriteMovieIds(favoriteMovieIds);
+        updateFavoriteButton(movieId);
+    });
+}
+
 function renderMovieDetail() {
     const detailElement = document.querySelector('#movie-detail');
     const movieId = new URLSearchParams(window.location.search).get('id');
@@ -35,9 +81,12 @@ function renderMovieDetail() {
             </div>
             <h2>Sinopsis</h2>
             <p class="detail-synopsis">${movie.synopsis}</p>
+            <button class="favorite-button" id="favorite-button" type="button" aria-pressed="false"></button>
             <a class="btn-primary" href="/index.html#movie-catalog">▶ Ver más películas</a>
         </div>
     `;
+
+    initializeFavoriteButton(movie.id);
 }
 
 function initializeThemeToggle() {

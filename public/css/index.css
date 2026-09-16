@@ -331,6 +331,16 @@ body {
     font-weight: bold;
 }
 
+.favorite-indicator {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    color: #f05a67;
+    font-size: 1.25rem;
+    line-height: 1;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+}
+
 .ep-title {
     font-size: 0.85rem;
     color: var(--text-muted);
@@ -423,6 +433,27 @@ body {
     color: var(--text-muted);
     line-height: 1.7;
     margin-bottom: 28px;
+}
+
+.favorite-button {
+    display: block;
+    margin-bottom: 15px;
+    padding: 10px 16px;
+    border: 1px solid var(--badge-bg);
+    border-radius: 4px;
+    background-color: transparent;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.favorite-button:hover,
+.favorite-button.is-favorite {
+    border-color: #f05a67;
+    background-color: rgba(240, 90, 103, 0.12);
+    color: #f05a67;
 }
 
 .movie-not-found {
