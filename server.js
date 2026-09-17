@@ -25,9 +25,9 @@ app.get(/.*/, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-//app.listen(PORT, () => {
-  // console.log(`🚀 Servidor Wagwan Mubi corriendo ready en http://localhost:${PORT}`);
-//});
+app.listen(PORT, () => {
+   console.log(`🚀 Servidor Wagwan Mubi corriendo ready en http://localhost:${PORT}`);
+});
 
 // Al final de tu archivo principal del servidor:
 module.exports = app;
