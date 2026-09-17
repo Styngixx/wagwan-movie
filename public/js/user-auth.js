@@ -1,3 +1,4 @@
+// comentario
 import { currentUser, register, login } from './user-store.js';
 
 const form = document.querySelector('#auth-form');
