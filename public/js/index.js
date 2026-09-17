@@ -287,3 +287,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     cargarTodaLaData();
 });
+
+module.exports = app;
