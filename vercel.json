@@ -18,6 +18,10 @@
       {
         "source": "/(.*)",
         "destination": "/index.html"
-      }
+      },
+      {"scripts": {
+  "start": "node server.js",
+  "vercel-build": "echo 'No build required'"
+}}   
     ]
   }
