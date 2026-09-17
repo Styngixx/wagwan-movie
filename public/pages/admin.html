@@ -1,151 +1,72 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Dashboard Administrador - WAGWAN</title>
-
     <link rel="stylesheet" href="../css/admin.css">
 </head>
-
 <body>
 
     <div class="admin-layout">
-
-        <!-- =========================
-             SIDEBAR
-        ========================== -->
         <aside class="admin-sidebar">
-
             <div class="admin-logo">
                 <span class="play-icon">▶</span>
                 <span>WAGWAN</span>
             </div>
-
             <nav class="admin-menu">
-
-                <a href="#" class="admin-menu-link active">
-                    Dashboard
-                </a>
-
-                <a href="#peliculas" class="admin-menu-link">
-                    Películas
-                </a>
-
-                <a href="../../index.html" class="admin-menu-link">
-                    Ver sitio
-                </a>
-
+                <a href="#" class="admin-menu-link active">Dashboard</a>
+                <a href="#peliculas" class="admin-menu-link">Películas</a>
+                <a href="/" class="admin-menu-link">Ver sitio</a>
             </nav>
-
-            <button class="admin-logout" id="adminLogout">
-                Cerrar sesión
-            </button>
-
+            <button class="admin-logout" id="adminLogout">Cerrar sesión</button>
         </aside>
-
-
-        <!-- =========================
-             CONTENIDO PRINCIPAL
-        ========================== -->
         <main class="admin-main">
-
             <!-- HEADER -->
             <header class="admin-header">
-
                 <div>
                     <h1>Panel de Administración</h1>
-
-                    <p>
-                        Gestiona las películas disponibles en WAGWAN.
-                    </p>
+                    <p>Gestiona las películas disponibles en WAGWAN.</p>
                 </div>
-
-                <div class="admin-user">
-                    Administrador
+                
+                <div class="admin-header-right">
+                    <div class="theme-toggle" id="adminThemeToggle" title="Cambiar Tema">☀️</div>
+                    <div class="admin-user">
+                        <span class="admin-avatar">👨‍💻</span> 
+                        <span id="adminLoggedName">Cargando...</span>
+                    </div>
                 </div>
-
             </header>
-
-
-            <!-- =========================
-                 ESTADÍSTICAS
-            ========================== -->
             <section class="admin-stats">
-
                 <div class="stat-card">
-                    <span class="stat-title">
-                        Total películas
-                    </span>
-
-                      <strong class="stat-number" id="totalMovies">
-                            0
-                      </strong>
+                    <span class="stat-title">Total películas</span>
+                    <strong class="stat-number" id="totalMovies">0</strong>
                 </div>
-
-
                 <div class="stat-card">
-                    <span class="stat-title">
-                        Géneros
-                    </span>
-
-                    <strong class="stat-number" id="totalGenres">
-                        0
-                    </strong>
+                    <span class="stat-title">Géneros</span>
+                    <strong class="stat-number" id="totalGenres">0</strong>
                 </div>
-
-
                 <div class="stat-card">
-                    <span class="stat-title">
-                        Estrenos 2026
-                    </span>
-
-                     <strong class="stat-number" id="total2026">
-                        0
-                     </strong>
+                    <span class="stat-title">Estrenos 2026</span>
+                    <strong class="stat-number" id="total2026">0</strong>
                 </div>
-
             </section>
 
-
-            <!-- =========================
-                 GESTIÓN DE PELÍCULAS
-            ========================== -->
-            <section
-                class="movies-management"
-                id="peliculas"
-            >
-
+            <section class="movies-management" id="peliculas">
                 <div class="section-title">
-
                     <div>
                         <h2>Gestión de Películas</h2>
-
-                        <p>
-                            Agrega, modifica o elimina películas.
-                        </p>
+                        <p>Agrega, modifica o elimina películas.</p>
                     </div>
-
-                    <button
-                        class="btn-add-movie"
-                        id="btnAddMovie"
-                    >
-                        + Agregar película
-                    </button>
-
+                    <button class="btn-add-movie" id="btnAddMovie">+ Agregar película</button>
                 </div>
-
 
                 <!-- TABLA -->
                 <div class="movies-table-container">
-
                     <table class="movies-table">
-
                         <thead>
                             <tr>
-                                <th>Imagen</th>
+                                <th>Portada</th>
                                 <th>Título</th>
                                 <th>Género</th>
                                 <th>Año</th>
@@ -153,124 +74,72 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-
                         <tbody id="moviesTableBody">
-
-                            <!-- Las películas aparecerán aquí -->
-
                         </tbody>
-
                     </table>
-
                 </div>
-
             </section>
-
         </main>
-
     </div>
 
-    <!-- =========================================
-     MODAL AGREGAR PELÍCULA
-========================================== -->
+    <div class="movie-modal" id="movieModal">
+        <div class="movie-modal-content">
+            <button class="movie-modal-close" id="movieModalClose" title="Cerrar">&times;</button>
+            
+            <h2>Agregar película</h2>
+            <p class="movie-modal-description">Sube la carátula y completa los detalles técnicos.</p>
 
-<div class="movie-modal" id="movieModal">
-
-    <div class="movie-modal-content">
-
-        <button class="movie-modal-close" id="movieModalClose">
-            &times;
-        </button>
-
-        <h2>Agregar película</h2>
-
-        <p class="movie-modal-description">
-            Completa los datos de la nueva película.
-        </p>
-
-        <form id="movieForm">
-
-            <div class="movie-form-group">
-                <label for="movieTitle">Título</label>
-
-                <input
-                    type="text"
-                    id="movieTitle"
-                    placeholder="Ej: Interstellar"
-                    required
-                >
-            </div>
-
-            <div class="movie-form-group">
-                <label for="movieGenre">Género</label>
-
-                <select id="movieGenre" required>
-                    <option value="">Seleccionar género</option>
-                    <option value="Acción">Acción</option>
-                    <option value="Aventura">Aventura</option>
-                    <option value="Comedia">Comedia</option>
-                    <option value="Drama">Drama</option>
-                    <option value="Romance">Romance</option>
-                    <option value="Terror">Terror</option>
-                    <option value="Ciencia ficción">Ciencia ficción</option>
-                    <option value="Animación">Animación</option>
-                </select>
-            </div>
-
-            <div class="movie-form-row">
-
+            <form id="movieForm">
                 <div class="movie-form-group">
-                    <label for="movieYear">Año</label>
+                    <label for="movieTitle">Título de la Película</label>
+                    <input type="text" id="movieTitle" placeholder="Ej: Interstellar" required>
+                </div>
 
-                    <input
-                        type="number"
-                        id="movieYear"
-                        min="1900"
-                        max="2100"
-                        placeholder="2026"
-                        required
-                    >
+                <div class="movie-form-row">
+                    <div class="movie-form-group">
+                        <label for="movieGenre">Género</label>
+                        <select id="movieGenre" required>
+                            <option value="" disabled selected>Seleccionar...</option>
+                            <option value="Acción">Acción</option>
+                            <option value="Aventura">Aventura</option>
+                            <option value="Biografía">Biografía</option>
+                            <option value="Comedia">Comedia</option>
+                            <option value="Drama">Drama</option>
+                            <option value="Ciencia Ficción">Ciencia Ficción</option>
+                            <option value="Suspenso">Suspenso</option>
+                        </select>
+                    </div>
+                    <div class="movie-form-group">
+                        <label for="movieYear">Año de Estreno</label>
+                        <input type="number" id="movieYear" min="1900" max="2100" placeholder="2026" required>
+                    </div>
                 </div>
 
                 <div class="movie-form-group">
-                    <label for="movieDuration">Duración</label>
-
-                    <input
-                        type="text"
-                        id="movieDuration"
-                        placeholder="2h 15m"
-                        required
-                    >
+                    <label for="movieDuration">Duración (minutos)</label>
+                    <input type="number" id="movieDuration" placeholder="Ej: 145" required>
                 </div>
 
-            </div>
+                <div class="movie-form-group">
+                    <label for="movieRanking">Ranking (1 al 10)</label>
+                    <input type="number" id="movieRanking" min="1" max="10" placeholder="Ej: 8" required>
+                </div>
 
-            <div class="movie-form-group">
-                <label for="movieImage">Imagen</label>
+                <!-- File Input Profesional -->
+                <div class="movie-form-group">
+                    <label for="movieImage">Carátula Oficial (Subir Archivo)</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="movieImage" accept="image/png, image/jpeg, image/webp" required>
+                    </div>
+                </div>
 
-                <input
-                    type="text"
-                    id="movieImage"
-                    placeholder="../media/nombre-imagen.jpg"
-                    required
-                >
-            </div>
+                <p class="movie-form-error" id="movieFormError"></p>
 
-            <p class="movie-form-error" id="movieFormError"></p>
-
-            <button type="submit" class="movie-save-button">
-                Guardar película
-            </button>
-
-        </form>
-
+                <button type="submit" class="movie-save-button">Guardar en Base de Datos</button>
+            </form>
+        </div>
     </div>
-
-</div>
-
 
     <script src="../js/admin.js"></script>
-
 </body>
-
 </html>
