@@ -1,141 +1,278 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // === 1. PROTECCIÓN Y SESIÓN (ANTI-CRASH) ===
     const adminLogged = localStorage.getItem('adminLogged');
-    if (adminLogged !== 'true') return window.location.href = '/';
+    if (adminLogged !== 'true') {
+        window.location.href = '/'; 
+        return; 
+    }
 
-    // Cargar Usuario
     try {
-        const adminUser = JSON.parse(localStorage.getItem('adminUser'));
-        if (adminUser && adminUser.nombre_usr) document.getElementById('adminLoggedName').textContent = adminUser.nombre_usr; 
-    } catch (e) { }
+        const adminUser = JSON.parse(localStorage.getItem('adminUser') || '{}');
+        const nombreAdmin = adminUser.usuario || adminUser.nombre_usr || 'Admin';
+        const nameElement = document.getElementById('adminLoggedName');
+        if (nameElement) nameElement.textContent = nombreAdmin; 
+    } catch (e) { 
+        console.error("Error leyendo sesión"); 
+    }
 
-    // Theme Toggle
+    // === 2. TEMA GLOBAL WAGWAN ===
     const body = document.body;
-    if (localStorage.getItem('adminTheme') === 'light') body.classList.add('light-mode');
-    document.getElementById('adminThemeToggle')?.addEventListener('click', (e) => {
-        body.classList.toggle('light-mode');
-        localStorage.setItem('adminTheme', body.classList.contains('light-mode') ? 'light' : 'dark');
-        e.target.textContent = body.classList.contains('light-mode') ? '🌙' : '☀️';
+    const adminThemeToggle = document.getElementById('adminThemeToggle');
+    
+    if (localStorage.getItem('wagwanTheme') === 'dark') {
+        body.classList.add('dark-mode');
+        if (adminThemeToggle) adminThemeToggle.textContent = '☀️';
+    } else {
+        body.classList.remove('dark-mode');
+        if (adminThemeToggle) adminThemeToggle.textContent = '🌙';
+    }
+
+    adminThemeToggle?.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        const isDark = body.classList.contains('dark-mode');
+        localStorage.setItem('wagwanTheme', isDark ? 'dark' : 'light');
+        if (adminThemeToggle) adminThemeToggle.textContent = isDark ? '☀️' : '🌙';
     });
 
+    // === 3. VARIABLES Y PESTAÑAS ===
     const moviesTableBody = document.getElementById('moviesTableBody');
-    const movieModal = document.getElementById('movieModal');
-    const movieForm = document.getElementById('movieForm');
-    
-    // Variables de estadísticas
-    const totalMovies = document.getElementById('totalMovies');
-    const totalGenres = document.getElementById('totalGenres');
-    const total2026 = document.getElementById('total2026');
-
+    const bannerTableBody = document.getElementById('bannerTableBody');
+    const topTableBody = document.getElementById('topTableBody');
     let peliculas = [];
-    let peliculaEditandoId = null;
 
-    // 1. CARGAR DATOS
+    const menuLinks = document.querySelectorAll('.admin-menu-link[data-target]');
+    const panels = document.querySelectorAll('.admin-panel');
+    const panelTitle = document.getElementById('panelTitle');
+    const panelDesc = document.getElementById('panelDesc');
+
+    menuLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            menuLinks.forEach(l => l.classList.remove('active'));
+            panels.forEach(p => p.classList.remove('active'));
+            
+            link.classList.add('active');
+            document.getElementById(link.dataset.target).classList.add('active');
+            
+            panelTitle.textContent = link.textContent.replace(/[🎬🖼️⭐]/g, '').trim();
+            if(link.dataset.target === 'panel-catalogo') panelDesc.textContent = 'Gestiona la bóveda general de películas y series.';
+            if(link.dataset.target === 'panel-banners') panelDesc.textContent = 'Elige qué contenido de la BD mostrar en el inicio.';
+            if(link.dataset.target === 'panel-tops') panelDesc.textContent = 'Arma tu cartelera lateral de Top Estrenos.';
+        });
+    });
+
+    // === 4. CARGAR DATOS Y RENDERIZAR ===
     async function cargarPeliculas() {
         try {
             const response = await fetch('/api/peliculas');
             peliculas = await response.json();
-            mostrarPeliculas(peliculas);
-        } catch (error) { console.error('Error al cargar:', error); }
+            renderizarTablas();
+            actualizarEstadisticas();
+        } catch (error) { console.error('Error al cargar bd:', error); }
     }
 
-    // ACTUALIZAR ESTADÍSTICAS DEL PANEL
-    function actualizarEstadisticas(lista) {
-        if (totalMovies) totalMovies.textContent = lista.length;
-        const generos = new Set(lista.map(p => p.genero));
-        if (totalGenres) totalGenres.textContent = generos.size;
-        const estrenos = lista.filter(p => p.año_estreno == 2026);
-        if (total2026) total2026.textContent = estrenos.length;
+    function actualizarEstadisticas() {
+        const elMovies = document.getElementById('totalMovies');
+        if(elMovies) elMovies.textContent = peliculas.length;
+        
+        const generos = new Set(peliculas.map(p => p.genero));
+        const elGenres = document.getElementById('totalGenres');
+        if(elGenres) elGenres.textContent = generos.size;
+        
+        const el2026 = document.getElementById('total2026');
+        if(el2026) el2026.textContent = peliculas.filter(p => p.año_estreno == 2026).length;
     }
 
-    // 2. RENDERIZAR TABLA
-    function mostrarPeliculas(lista) {
+    function renderizarTablas() {
         moviesTableBody.innerHTML = '';
-        actualizarEstadisticas(lista); // Refresca los contadores de arriba
+        bannerTableBody.innerHTML = '';
+        topTableBody.innerHTML = '';
 
-        lista.forEach(pelicula => {
-            const estadoActual = pelicula.estado || 'Activo';
-            const badgeClass = estadoActual.toLowerCase();
-            
-            // Lógica de botones de estado
-            const btnStatus = estadoActual === 'Activo' 
-                ? `<button class="btn-status-movie btn-warning" data-id="${pelicula.id}" data-estado="Suspendido">Stand By</button>`
-                : `<button class="btn-status-movie btn-success" data-id="${pelicula.id}" data-estado="Activo">Activar</button>`;
+        peliculas.forEach(p => {
+            const estadoBD = p.estado || 'Activo';
+            const estadoBanner = p.estado_banner || 'Ninguno';
+            const estadoTop = p.estado_top || 'Ninguno';
+            const tipoLabel = p.tipo === 'serie' ? 'Serie' : 'Película';
 
-            const fila = document.createElement('tr');
-            fila.innerHTML = `
-                <td><img src="${pelicula.url_portada}" width="50" style="border-radius:6px; object-fit:cover;"></td>
-                <td>${pelicula.titulo}</td>
-                <td>${pelicula.genero}</td>
-                <td>${pelicula.año_estreno || 'N/A'}</td>
-                <td><span class="badge ${badgeClass}">${estadoActual}</span></td>
-                <td>
-                    <button class="btn-edit-movie" data-id="${pelicula.id}">Editar</button>
-                    ${estadoActual !== 'Eliminado' ? btnStatus : ''}
-                    <button class="btn-delete-movie" data-id="${pelicula.id}">Eliminar</button>
-                </td>
+            moviesTableBody.innerHTML += `
+                <tr>
+                    <td><img src="${p.url_portada}" width="45" style="border-radius:4px; object-fit:cover;"></td>
+                    <td>
+                        <strong style="display:block;">${p.titulo}</strong>
+                        <span style="font-size:11px; color:var(--accent-blue); font-weight:bold;">${tipoLabel}</span>
+                    </td>
+                    <td>${p.genero}</td>
+                    <td>${p.año_estreno}</td>
+                    <td><span class="badge ${estadoBD.toLowerCase()}">${estadoBD}</span></td>
+                    <td>
+                        <button class="btn-edit-movie" data-action="editar" data-id="${p.id}">Editar</button>
+                        ${estadoBD === 'Activo' 
+                            ? `<button class="btn-delete-movie" data-action="estadoBD" data-estado="Suspendido" data-id="${p.id}">Suspender</button>` 
+                            : `<button class="btn-success" style="padding:7px 12px; border:none; border-radius:7px; cursor:pointer;" data-action="estadoBD" data-estado="Activo" data-id="${p.id}">Activar</button>`}
+                    </td>
+                </tr>
             `;
-            moviesTableBody.appendChild(fila);
+
+            if (estadoBanner !== 'Ninguno') bannerTableBody.innerHTML += crearFilaVitrina(p, 'estado_banner', estadoBanner, tipoLabel);
+            if (estadoTop !== 'Ninguno') topTableBody.innerHTML += crearFilaVitrina(p, 'estado_top', estadoTop, tipoLabel);
         });
     }
 
-    // 3. ABRIR MODAL (CREAR)
-    document.getElementById('btnAddMovie')?.addEventListener('click', () => {
-        peliculaEditandoId = null;
-        movieForm.reset();
-        document.getElementById('movieImage').required = true; 
-        document.querySelector('.movie-modal-content h2').textContent = 'Agregar película';
-        movieModal.classList.add('active');
-    });
-    document.getElementById('movieModalClose')?.addEventListener('click', () => movieModal.classList.remove('active'));
+    function crearFilaVitrina(p, campo, estado, tipoLabel) {
+        const isActivo = estado === 'Activo';
+        const btnAccion = isActivo 
+            ? `<button class="btn-edit-movie" style="background:#f39c12;" data-action="vitrina" data-campo="${campo}" data-estado="Oculto" data-id="${p.id}">Ocultar</button>`
+            : `<button class="btn-edit-movie" style="background:#2ecc71;" data-action="vitrina" data-campo="${campo}" data-estado="Activo" data-id="${p.id}">Activar</button>`;
 
-    // 4. DELEGACIÓN DE ACCIONES (EDITAR, ESTADO, ELIMINAR)
-    moviesTableBody.addEventListener('click', async (e) => {
-        const id = e.target.dataset.id;
-        if (!id) return;
+        return `<tr>
+            <td><img src="${p.url_portada}" width="45" style="border-radius:4px; object-fit:cover;"></td>
+            <td>
+                <strong style="display:block;">${p.titulo}</strong>
+                <span style="font-size:11px; color:var(--accent-blue); font-weight:bold;">${tipoLabel}</span>
+            </td>
+            <td><span class="badge ${estado.toLowerCase()}">${estado}</span></td>
+            <td>
+                ${btnAccion}
+                <button class="btn-delete-movie" data-action="vitrina" data-campo="${campo}" data-estado="Ninguno" data-id="${p.id}">Quitar</button>
+            </td>
+        </tr>`;
+    }
 
-        // EDITAR
-        if (e.target.classList.contains('btn-edit-movie')) {
-            const peli = peliculas.find(p => p.id == id);
-            if (peli) {
-                peliculaEditandoId = peli.id;
-                document.getElementById('movieTitle').value = peli.titulo;
-                document.getElementById('movieGenre').value = peli.genero;
-                document.getElementById('movieYear').value = peli.año_estreno;
-                document.getElementById('movieDuration').value = peli.duracion;
-                document.getElementById('movieRanking').value = peli.ranking || 10;
-                document.getElementById('movieImage').required = false; 
-                
-                document.querySelector('.movie-modal-content h2').textContent = 'Editar película';
-                movieModal.classList.add('active');
-            }
-        }
+    // === 5. EVENTOS DE LOS BOTONES DE LAS TABLAS ===
+    function setupDelegation(tbody) {
+        if(!tbody) return;
+        tbody.addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            
+            const action = btn.dataset.action;
+            const id = btn.dataset.id;
 
-        // CAMBIAR ESTADO
-        if (e.target.classList.contains('btn-status-movie')) {
-            cambiarEstado(id, e.target.dataset.estado);
-        }
+            if (action === 'editar') editarPelicula(id);
+            else if (action === 'estadoBD') cambiarEstadoBD(id, btn.dataset.estado);
+            else if (action === 'vitrina') cambiarEstadoVitrina(id, btn.dataset.campo, btn.dataset.estado);
+        });
+    }
 
-        // ELIMINAR
-        if (e.target.classList.contains('btn-delete-movie')) {
-            if(confirm('¿Mover a papelera (Eliminado)? No se borrará de la base de datos.')) cambiarEstado(id, 'Eliminado');
-        }
-    });
+    setupDelegation(moviesTableBody);
+    setupDelegation(bannerTableBody);
+    setupDelegation(topTableBody);
 
-    async function cambiarEstado(id, estado) {
+    async function cambiarEstadoBD(id, nuevoEstado) {
         await fetch(`/api/peliculas/${id}/estado`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ estado })
+            method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ estado: nuevoEstado })
         });
         cargarPeliculas();
     }
 
-    // 5. ENVIAR FORMULARIO (POST O PUT)
+    async function cambiarEstadoVitrina(id, campo, nuevoEstado) {
+        await fetch(`/api/peliculas/${id}/vitrina`, {
+            method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ campo, estado: nuevoEstado })
+        });
+        cargarPeliculas();
+    }
+
+    // === 6. BUSCADOR PARA VITRINAS ===
+    const vitrinaModal = document.getElementById('vitrinaModal');
+    const vitrinaSearch = document.getElementById('vitrinaSearch');
+    const vitrinaResults = document.getElementById('vitrinaResults');
+    let vitrinaActual = ''; 
+
+    document.querySelectorAll('.btn-vitrina').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            vitrinaActual = e.target.dataset.tipo === 'banner' ? 'estado_banner' : 'estado_top';
+            document.getElementById('vitrinaTitle').textContent = `Asignar al ${vitrinaActual === 'estado_banner' ? 'Banner' : 'Top Estrenos'}`;
+            vitrinaSearch.value = '';
+            renderizarBuscador(peliculas); 
+            vitrinaModal.classList.add('active');
+        });
+    });
+
+    document.getElementById('vitrinaModalClose')?.addEventListener('click', () => vitrinaModal.classList.remove('active'));
+
+    vitrinaSearch?.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        renderizarBuscador(peliculas.filter(p => p.titulo.toLowerCase().includes(term)));
+    });
+
+    function renderizarBuscador(lista) {
+        vitrinaResults.innerHTML = '';
+        lista.forEach(p => {
+            const estadoActual = vitrinaActual === 'estado_banner' ? p.estado_banner : p.estado_top;
+            if (estadoActual && estadoActual !== 'Ninguno') return;
+            if (p.estado === 'Suspendido' || p.estado === 'Eliminado') return;
+
+            const tipoLabel = p.tipo === 'serie' ? 'Serie' : 'Película';
+            const div = document.createElement('div');
+            div.className = 'search-result-item';
+            div.innerHTML = `
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <img src="${p.url_portada}" width="40" style="border-radius:4px; object-fit:cover;">
+                    <div>
+                        <strong style="display:block; font-size:14px; color:var(--text-main);">${p.titulo}</strong>
+                        <span style="font-size:12px; color:var(--text-muted);">${p.año_estreno} | ⭐ ${p.ranking || 10} | ${tipoLabel}</span>
+                    </div>
+                </div>
+                <button class="btn-success" style="padding:6px 12px; border-radius:6px; border:none; cursor:pointer;" 
+                        data-action="add-vitrina" data-id="${p.id}" data-campo="${vitrinaActual}" data-estado="Activo">
+                    Añadir
+                </button>
+            `;
+            vitrinaResults.appendChild(div);
+        });
+        
+        if(vitrinaResults.innerHTML === '') {
+            vitrinaResults.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:20px;">No hay contenido disponible para agregar.</p>';
+        }
+    }
+
+    vitrinaResults?.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if(!btn || btn.dataset.action !== 'add-vitrina') return;
+        cambiarEstadoVitrina(btn.dataset.id, btn.dataset.campo, btn.dataset.estado);
+        vitrinaModal.classList.remove('active');
+    });
+
+    // === 7. CRUD PRINCIPAL (Formulario) ===
+    const movieModal = document.getElementById('movieModal');
+    const movieForm = document.getElementById('movieForm');
+    let peliculaEditandoId = null;
+
+    document.getElementById('btnAddMovie')?.addEventListener('click', () => {
+        peliculaEditandoId = null;
+        movieForm.reset();
+        document.getElementById('movieTipo').value = 'pelicula'; 
+        document.getElementById('movieImage').required = true; 
+        document.querySelector('#movieModal h2').textContent = 'Agregar contenido a BD';
+        movieModal.classList.add('active');
+    });
+
+    document.getElementById('movieModalClose')?.addEventListener('click', () => movieModal.classList.remove('active'));
+
+    function editarPelicula(id) {
+        const peli = peliculas.find(p => p.id == id);
+        if (peli) {
+            peliculaEditandoId = peli.id;
+            document.getElementById('movieTitle').value = peli.titulo;
+            document.getElementById('movieTipo').value = peli.tipo || 'pelicula'; 
+            document.getElementById('movieGenre').value = peli.genero;
+            document.getElementById('movieYear').value = peli.año_estreno;
+            document.getElementById('movieDuration').value = peli.duracion;
+            document.getElementById('movieRanking').value = peli.ranking || 10;
+            document.getElementById('movieImage').required = false; 
+            document.querySelector('#movieModal h2').textContent = 'Editar contenido';
+            movieModal.classList.add('active');
+        }
+    }
+
     movieForm?.addEventListener('submit', async (event) => {
         event.preventDefault();
         const formData = new FormData();
         formData.append('titulo', document.getElementById('movieTitle').value);
+        formData.append('tipo', document.getElementById('movieTipo').value); 
         formData.append('genero', document.getElementById('movieGenre').value);
         formData.append('anio', document.getElementById('movieYear').value); 
         formData.append('duracion', document.getElementById('movieDuration').value);
@@ -154,6 +291,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (res.ok) {
                 movieModal.classList.remove('active');
                 cargarPeliculas();
+            } else {
+                document.getElementById('movieFormError').textContent = 'Error al guardar';
             }
         } catch (e) { document.getElementById('movieFormError').textContent = 'Error de conexión'; }
     });

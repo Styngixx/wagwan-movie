@@ -64,3 +64,19 @@ router.patch('/peliculas/:id/estado', express.json(), async (req, res) => {
 });
 
 module.exports = router;
+
+
+// 4. CAMBIAR ESTADO DE VITRINAS (BANNERS Y TOPS)
+router.patch('/peliculas/:id/vitrina', express.json(), async (req, res) => {
+    try {
+        const { id } = req.params;
+        // 'campo' será "estado_banner" o "estado_top", y 'estado' será "Activo", "Oculto" o "Ninguno"
+        const { campo, estado } = req.body; 
+        
+        const { error } = await supabase.from('peliculas').update({ [campo]: estado }).eq('id', id);
+        if (error) throw error;
+        res.status(200).json({ success: true });
+    } catch (error) { 
+        res.status(500).json({ success: false }); 
+    }
+});
