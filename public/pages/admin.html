@@ -4,98 +4,124 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Administrador - WAGWAN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/admin.css">
+    <style>
+        .admin-panel { display: none; animation: fadeIn 0.3s ease; }
+        .admin-panel.active { display: block; }
+        .badge.ninguno { background: #334155; color: #cbd5e1; }
+        .badge.oculto { background: rgba(241, 196, 15, 0.15); color: #f1c40f; }
+        .btn-vitrina { background: #10b981; }
+        .btn-vitrina:hover { background: #059669; }
+        .search-result-item { display: flex; justify-content: space-between; align-items: center; background: var(--surface-hover); padding: 10px; border-radius: 8px; margin-bottom: 8px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
 <body>
 
     <div class="admin-layout">
+        <!-- SIDEBAR -->
         <aside class="admin-sidebar">
             <div class="admin-logo">
-                <span class="play-icon">▶</span>
-                <span>WAGWAN</span>
+                <span class="play-icon">▶</span><span>WAGWAN</span>
             </div>
             <nav class="admin-menu">
-                <a href="#" class="admin-menu-link active">Dashboard</a>
-                <a href="#peliculas" class="admin-menu-link">Películas</a>
-                <a href="/" class="admin-menu-link">Ver sitio</a>
+                <a href="#" class="admin-menu-link active" data-target="panel-catalogo">🎬 Catálogo Principal</a>
+                <a href="#" class="admin-menu-link" data-target="panel-banners">🖼️ Banners Hero</a>
+                <a href="#" class="admin-menu-link" data-target="panel-tops">⭐ Top Estrenos</a>
+                <a href="/" class="admin-menu-link">🌐 Ver sitio público</a>
             </nav>
             <button class="admin-logout" id="adminLogout">Cerrar sesión</button>
         </aside>
+
+        <!-- MAIN CONTENT -->
         <main class="admin-main">
             <!-- HEADER -->
             <header class="admin-header">
                 <div>
-                    <h1>Panel de Administración</h1>
-                    <p>Gestiona las películas disponibles en WAGWAN.</p>
+                    <h1 id="panelTitle">Catálogo Principal</h1>
+                    <p id="panelDesc">Gestiona la bóveda general de películas y series.</p>
                 </div>
-                
                 <div class="admin-header-right">
-                    <div class="theme-toggle" id="adminThemeToggle" title="Cambiar Tema">☀️</div>
+                    <div class="theme-toggle" id="adminThemeToggle" title="Cambiar Tema" style="cursor:pointer; font-size: 1.5rem;">☀️</div>
                     <div class="admin-user">
                         <span class="admin-avatar">👨‍💻</span> 
                         <span id="adminLoggedName">Cargando...</span>
                     </div>
                 </div>
             </header>
+
+            <!-- ESTADÍSTICAS -->
             <section class="admin-stats">
-                <div class="stat-card">
-                    <span class="stat-title">Total películas</span>
-                    <strong class="stat-number" id="totalMovies">0</strong>
+                <div class="stat-card"><span class="stat-title">Total contenido BD</span><strong class="stat-number" id="totalMovies">0</strong></div>
+                <div class="stat-card"><span class="stat-title">Géneros</span><strong class="stat-number" id="totalGenres">0</strong></div>
+                <div class="stat-card"><span class="stat-title">Estrenos 2026</span><strong class="stat-number" id="total2026">0</strong></div>
+            </section>
+
+            <!-- PANEL 1: CATÁLOGO PRINCIPAL -->
+            <section class="movies-management admin-panel active" id="panel-catalogo">
+                <div class="section-title">
+                    <div><h2>Películas y Series en la BD</h2><p>Agrega, modifica o suspende del sistema.</p></div>
+                    <button class="btn-add-movie" id="btnAddMovie">+ Nueva a la BD</button>
                 </div>
-                <div class="stat-card">
-                    <span class="stat-title">Géneros</span>
-                    <strong class="stat-number" id="totalGenres">0</strong>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-title">Estrenos 2026</span>
-                    <strong class="stat-number" id="total2026">0</strong>
+                <div class="movies-table-container">
+                    <table class="movies-table">
+                        <thead><tr><th>Portada</th><th>Título</th><th>Género</th><th>Año</th><th>Estado BD</th><th>Acciones</th></tr></thead>
+                        <tbody id="moviesTableBody"></tbody>
+                    </table>
                 </div>
             </section>
 
-            <section class="movies-management" id="peliculas">
+            <!-- PANEL 2: BANNERS HERO -->
+            <section class="movies-management admin-panel" id="panel-banners">
                 <div class="section-title">
-                    <div>
-                        <h2>Gestión de Películas</h2>
-                        <p>Agrega, modifica o elimina películas.</p>
-                    </div>
-                    <button class="btn-add-movie" id="btnAddMovie">+ Agregar película</button>
+                    <div><h2>Películas en Banner</h2><p>Elige qué contenido de la BD mostrar en el inicio.</p></div>
+                    <button class="btn-add-movie btn-vitrina" data-tipo="banner">+ Asignar al Banner</button>
                 </div>
-
-                <!-- TABLA -->
                 <div class="movies-table-container">
                     <table class="movies-table">
-                        <thead>
-                            <tr>
-                                <th>Portada</th>
-                                <th>Título</th>
-                                <th>Género</th>
-                                <th>Año</th>
-                                <th>Duración</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="moviesTableBody">
-                        </tbody>
+                        <thead><tr><th>Portada</th><th>Título</th><th>Estado Banner</th><th>Control Banner</th></tr></thead>
+                        <tbody id="bannerTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- PANEL 3: TOP ESTRENOS -->
+            <section class="movies-management admin-panel" id="panel-tops">
+                <div class="section-title">
+                    <div><h2>Top Estrenos</h2><p>Arma tu cartelera lateral de Top Estrenos.</p></div>
+                    <button class="btn-add-movie btn-vitrina" data-tipo="top">+ Asignar al Top</button>
+                </div>
+                <div class="movies-table-container">
+                    <table class="movies-table">
+                        <thead><tr><th>Portada</th><th>Título</th><th>Estado Top</th><th>Control Top</th></tr></thead>
+                        <tbody id="topTableBody"></tbody>
                     </table>
                 </div>
             </section>
         </main>
     </div>
 
+    <!-- MODAL 1: CRUD BASE DE DATOS (COMPLETO) -->
     <div class="movie-modal" id="movieModal">
         <div class="movie-modal-content">
             <button class="movie-modal-close" id="movieModalClose" title="Cerrar">&times;</button>
+            <h2>Agregar contenido a BD</h2>
             
-            <h2>Agregar película</h2>
-            <p class="movie-modal-description">Sube la carátula y completa los detalles técnicos.</p>
-
             <form id="movieForm">
                 <div class="movie-form-group">
-                    <label for="movieTitle">Título de la Película</label>
+                    <label for="movieTitle">Título</label>
                     <input type="text" id="movieTitle" placeholder="Ej: Interstellar" required>
                 </div>
 
                 <div class="movie-form-row">
+                    <div class="movie-form-group">
+                        <label for="movieTipo">Tipo</label>
+                        <select id="movieTipo" required>
+                            <option value="pelicula" selected>Película</option>
+                            <option value="serie">Serie</option>
+                        </select>
+                    </div>
                     <div class="movie-form-group">
                         <label for="movieGenre">Género</label>
                         <select id="movieGenre" required>
@@ -109,15 +135,17 @@
                             <option value="Suspenso">Suspenso</option>
                         </select>
                     </div>
+                </div>
+
+                <div class="movie-form-row">
                     <div class="movie-form-group">
                         <label for="movieYear">Año de Estreno</label>
                         <input type="number" id="movieYear" min="1900" max="2100" placeholder="2026" required>
                     </div>
-                </div>
-
-                <div class="movie-form-group">
-                    <label for="movieDuration">Duración (minutos)</label>
-                    <input type="number" id="movieDuration" placeholder="Ej: 145" required>
+                    <div class="movie-form-group">
+                        <label for="movieDuration">Duración (min)</label>
+                        <input type="number" id="movieDuration" placeholder="Ej: 145" required>
+                    </div>
                 </div>
 
                 <div class="movie-form-group">
@@ -125,18 +153,27 @@
                     <input type="number" id="movieRanking" min="1" max="10" placeholder="Ej: 8" required>
                 </div>
 
-                <!-- File Input Profesional -->
                 <div class="movie-form-group">
-                    <label for="movieImage">Carátula Oficial (Subir Archivo)</label>
-                    <div class="file-upload-wrapper">
-                        <input type="file" id="movieImage" accept="image/png, image/jpeg, image/webp" required>
-                    </div>
+                    <label for="movieImage">Carátula Oficial</label>
+                    <input type="file" id="movieImage" accept="image/*" style="padding: 10px; background:var(--bg-secondary); border:1px solid var(--border-light); border-radius:8px; color:var(--text-main);">
                 </div>
 
                 <p class="movie-form-error" id="movieFormError"></p>
-
                 <button type="submit" class="movie-save-button">Guardar en Base de Datos</button>
             </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: BUSCADOR PARA VITRINAS -->
+    <div class="movie-modal" id="vitrinaModal">
+        <div class="movie-modal-content" style="max-width: 600px;">
+            <button class="movie-modal-close" id="vitrinaModalClose" title="Cerrar">&times;</button>
+            <h2 id="vitrinaTitle">Asignar Película</h2>
+            <p style="color:var(--text-muted); font-size:13px; margin-bottom:15px;">Busca en tu bóveda y añádela a esta sección.</p>
+            <input type="text" id="vitrinaSearch" placeholder="Escribe el título..." style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--border-light); margin-bottom:15px; background:var(--bg-secondary); color:var(--text-main); outline:none;">
+            <div id="vitrinaResults" style="max-height: 350px; overflow-y: auto;">
+                <!-- Resultados inyectados por JS -->
+            </div>
         </div>
     </div>
 
