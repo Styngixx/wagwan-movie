@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAGWAN-MOVIE</title>
+    <link rel="stylesheet" href="/public/css/index.css">
+</head>
+<body class="dark-mode"> 
+    <!-- Barra de Navegación -->
+    <header class="navbar">
+        <div class="logo">
+            <span class="play-icon">▶</span> WAGWAN
+        </div>
+        <nav>
+            <a href="/">Inicio</a>
+            <a href="#">Géneros</a>
+            <a href="/#movies-container">Películas ⌄</a>
+            <a href="#">Series ⌄</a>
+            <a href="#">Animes ⌄</a>
+            <a href="/public/pages/favoritos.html">Favoritos</a>
+            <a href="#" class="admin-link" id="adminDashboardLink">Dashboard</a>
+        </nav>
+        <div class="user-actions">
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar...">
+            </div>
+            <button class="btn-login">Registroo</button>
+            <div class="theme-toggle" title="Cambiar Tema">☀️</div>
+        </div>
+    </header>
+
+    <!-- Modal Login Administrador -->
+    <div class="admin-modal" id="adminModal">
+        <div class="admin-modal-content">
+            <button class="admin-modal-close" id="adminModalClose">&times;</button>
+            <div class="admin-modal-logo">
+                <span class="play-icon">▶</span>
+                <span>WAGWAN</span>
+            </div>
+            <h2>Acceso Administrador</h2>
+            <p class="admin-modal-description">Ingresa tus credenciales para acceder al dashboard.</p>
+            <form id="adminLoginForm">
+                <div class="admin-form-group">
+                    <label for="adminUsuario">Usuario</label>
+                    <input type="text" id="adminUsuario" placeholder="Ingresa tu usuario" autocomplete="username" required>
+                </div>
+                <div class="admin-form-group">
+                    <label for="adminPassword">Contraseña</label>
+                    <input type="password" id="adminPassword" placeholder="Ingresa tu contraseña" autocomplete="current-password" required>
+                </div>
+                <p class="admin-login-error" id="adminLoginError"></p>
+                <button type="submit" class="admin-login-button">Ingresar al Dashboard</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hero Banner -->
+    <section class="hero-banner">
+        <div class="hero-content">
+            <h1>RAPIDOS Y FURIOSOS 11 (2026)</h1>
+            <div class="meta-info">
+                <span class="rating">8.5/10</span>
+                <span class="duration">2h 15m</span>
+                <span class="year">2026</span>
+                <span class="quality">HD</span>
+            </div>
+            <p>En esta película, Dominic Toretto y su equipo de corredores de autos de alto rendimiento se enfrentan a un nuevo y mortal enemigo: el misterioso Brazón, quien busca venganza por la muerte de su hermano, Jakob Toretto...</p>
+            <button class="btn-primary">▶ Ver Película</button>
+        </div>
+    </section>
+
+    <!-- Contenedor Principal -->
+    <div class="layout-container">
+        
+        <main class="main-content">
+            <!-- Sección: Promociones Especiales -->
+            <section class="section-block">
+                <div class="section-header">
+                    <h2>Promociones Especiales</h2>
+                    <span class="badge-green">Ver todas</span>
+                </div>
+                <div class="grid-promos">
+                    <div class="card-promo netflix-disney"><span class="tag-popular">★ POPULAR</span><div class="promo-discount">-90%</div><div class="promo-title">Netflix + Disney</div></div>
+                    <div class="card-promo netflix"><span class="tag-popular">★ POPULAR</span><div class="promo-discount">-90%</div><div class="promo-title">Netflix Premium</div></div>
+                    <div class="card-promo disney"><div class="promo-discount">-90%</div><div class="promo-title">Disney Plus</div></div>
+                    <div class="card-promo crunchyroll"><div class="promo-discount">-90%</div><div class="promo-title">Crunchyroll</div></div>
+                    <div class="card-promo hbomax"><div class="promo-discount">-90%</div><div class="promo-title">MAX</div></div>
+                </div>
+            </section>
+
+            <!-- Sección: Catálogo de películas -->
+            <section class="section-block">
+                <h2>Películas destacadas</h2>
+                <div class="movie-filters" aria-label="Filtrar películas por categoría">
+                    <button class="movie-filter active" type="button" data-category="Todas">Todas</button>
+                    <button class="movie-filter" type="button" data-category="Acción">Acción</button>
+                    <button class="movie-filter" type="button" data-category="Aventura">Aventura</button>
+                    <button class="movie-filter" type="button" data-category="Drama">Drama</button>
+                    <button class="movie-filter" type="button" data-category="Romance">Romance</button>
+                    <button class="movie-filter" type="button" data-category="Comedia">Comedia</button>
+                    <button class="movie-filter" type="button" data-category="Terror">Terror</button>
+                    <button class="movie-filter" type="button" data-category="Suspenso">Suspenso</button>
+                </div>
+                <!-- ID CORREGIDO AQUÍ 👇 -->
+                <div class="grid-episodios" id="movies-container">
+                    <!-- Las películas se generan desde public/js/movies.js -->
+                </div>
+            </section>
+        </main>
+
+        <aside class="sidebar">
+            <div class="sidebar-header">TOP ESTRENOS</div>
+            <div class="top-list">
+                <div class="top-item"><div class="top-img top-1"><span class="rank">#1</span></div><div class="top-info"><h4>Return of the Living...</h4><span class="top-meta">Película ★ 8.0</span><span class="top-year">2026</span></div></div>
+                <div class="top-item"><div class="top-img top-2"><span class="rank">#2</span></div><div class="top-info"><h4>Sunrise: El último...</h4><span class="top-meta">Película ★ 7.5</span><span class="top-year">2026</span></div></div>
+                <div class="top-item"><div class="top-img top-3"><span class="rank">#3</span></div><div class="top-info"><h4>La Captura (2026)</h4><span class="top-meta">Película ★ 7.1</span><span class="top-year">2026</span></div></div>
+                <div class="top-item"><div class="top-img top-4"><span class="rank">#4</span></div><div class="top-info"><h4>Mi mejor amigo...</h4><span class="top-meta">Película ★ 9.0</span><span class="top-year">2026</span></div></div>
+                <div class="top-item"><div class="top-img top-5"><span class="rank">#5</span></div><div class="top-info"><h4>Camp Rock 3 (2026)</h4><span class="top-meta">Película ★ 7.1</span><span class="top-year">2026</span></div></div>
+            </div>
+        </aside>
+
+    </div>
+
+   <footer class="footer">
+    <div class="footer-container">
+        <div class="footer-col">
+            <div class="logo">
+                <span class="play-icon">▶</span> WAGWAN
+            </div>
+            <p class="footer-desc">Tu plataforma para ver películas y series online, gratis y sin cortes.</p>
+        </div>
+
+        <div class="footer-col">
+            <h4>Navegación</h4>
+            <a href="/">Inicio</a>
+            <a href="#">Géneros</a>
+            <a href="/#movies-container">Películas</a>
+            <a href="/public/pages/favoritos.html">Favoritos</a>
+            <a href="#">Series</a>
+            <a href="#">Animes</a>
+        </div>
+
+        <div class="footer-col">
+            <h4>Ayuda</h4>
+            <a href="#">Preguntas Frecuentes</a>
+            <a href="#">Contacto</a>
+            <a href="#">Reportar un problema</a>
+        </div>
+
+        <div class="footer-col">
+            <h4>Síguenos</h4>
+            <div class="footer-socials">
+                <a href="#">Discord</a>
+                <a href="#">Twitter</a>
+                <a href="#">Instagram</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2026 WAGWAN. Todos los derechos reservados.</p>
+    </div>
+</footer>
+    <script src="/public/js/index.js"></script>
+</body>
+</html>
