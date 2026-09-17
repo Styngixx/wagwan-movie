@@ -28,3 +28,6 @@ app.get(/.*/, (req, res) => {
 app.listen(PORT, () => {
     console.log(`🚀 Servidor Wagwan Mubi corriendo ready en http://localhost:${PORT}`);
 });
+
+// Al final de tu archivo principal del servidor:
+module.exports = app;
