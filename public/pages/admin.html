@@ -133,6 +133,7 @@
                             <option value="Drama">Drama</option>
                             <option value="Ciencia Ficción">Ciencia Ficción</option>
                             <option value="Suspenso">Suspenso</option>
+                            <option value="Programación">Programación</option> <!-- Agregué Programación aquí por si acaso -->
                         </select>
                     </div>
                 </div>
@@ -151,6 +152,12 @@
                 <div class="movie-form-group">
                     <label for="movieRanking">Ranking (1 al 10)</label>
                     <input type="number" id="movieRanking" min="1" max="10" placeholder="Ej: 8" required>
+                </div>
+
+                <!-- CAMPO NUEVO PARA YOUTUBE -->
+                <div class="movie-form-group">
+                    <label for="url_yt">URL de YouTube</label>
+                    <input type="url" id="url_yt" placeholder="Ej: https://www.youtube.com/watch?v=..." required style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--border-light); background:var(--bg-secondary); color:var(--text-main); outline:none;">
                 </div>
 
                 <div class="movie-form-group">

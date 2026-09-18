@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // === 4. CARGA DE PELÍCULAS, BANNERS, TOP Y BUSCADOR ===
+    // === 4. CARGA DE CURSOS, BANNERS, TOP Y BUSCADOR ===
     let todasLasPeliculas = [];
 
     async function cargarTodaLaData() {
@@ -158,16 +158,17 @@ document.addEventListener('DOMContentLoaded', () => {
         container.innerHTML = '';
 
         lista.forEach(pelicula => {
+            // Modificamos el enlace y el estilo para que toda la tarjeta sea clickeable
             container.innerHTML += `
-                <div class="card-ep" onclick="window.location.href='/pages/pelicula.html?id=${pelicula.id}'">
+                <a href="/pages/detalle.html?id=${pelicula.id}" style="text-decoration: none; color: inherit; display: block;" class="card-ep">
                     <div class="ep-img" style="background-image: url('${pelicula.url_portada}');">
                         <span class="ep-badge">⭐ ${pelicula.ranking || 10}/10</span>
                     </div>
                     <div style="padding: 8px 5px;">
                         <h3 style="font-size:14px; margin-bottom:2px; color:var(--text-main);">${pelicula.titulo}</h3>
-                        <p style="font-size:12px; color:var(--text-muted);">📅 ${pelicula.año_estreno} | 🎬 ${pelicula.genero}</p>
+                        <p style="font-size:12px; color:var(--text-muted);">📅 ${pelicula.año_estreno} | 📚 ${pelicula.genero}</p>
                     </div>
-                </div>
+                </a>
             `;
         });
     }
@@ -192,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span>${peli.genero}</span>
                         <span class="quality">HD</span>
                     </div>
-                    <button class="btn-primary" onclick="window.location.href='/pages/pelicula.html?id=${peli.id}'">▶ Ver Película</button>
+                    <button class="btn-primary" onclick="window.location.href='/pages/detalle.html?id=${peli.id}'">▶ Ver Clase</button>
                 </div>
             `;
             index = (index + 1) % banners.length; 
@@ -211,13 +212,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         top5.forEach((peli, i) => {
             container.innerHTML += `
-                <div class="top-item" style="cursor:pointer;" onclick="window.location.href='/pages/pelicula.html?id=${peli.id}'">
+                <div class="top-item" style="cursor:pointer;" onclick="window.location.href='/pages/detalle.html?id=${peli.id}'">
                     <div class="top-img" style="background-image: url('${peli.url_portada}');">
                         <span class="rank">#${i + 1}</span>
                     </div>
                     <div class="top-info">
                         <h4 style="color:var(--text-main); font-size: 13px;">${peli.titulo}</h4>
-                        <span class="top-meta">Película ★ ${peli.ranking || 10}</span>
+                        <span class="top-meta">Clase ★ ${peli.ranking || 10}</span>
                         <span class="top-year">${peli.año_estreno}</span>
                     </div>
                 </div>
@@ -243,9 +244,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (matches.length > 0) {
                 matches.slice(0, 5).forEach(peli => {
-                    const tipoLabel = peli.tipo === 'serie' ? 'Serie' : 'Película';
+                    // Cambiamos el texto Serie/Película por Ruta/Clase (Opcional, pero consistente)
+                    const tipoLabel = peli.tipo === 'serie' ? 'Ruta' : 'Clase';
                     searchResults.innerHTML += `
-                        <a href="/pages/pelicula.html?id=${peli.id}" class="search-result-item" style="text-decoration:none;">
+                        <a href="/pages/detalle.html?id=${peli.id}" class="search-result-item" style="text-decoration:none;">
                             <img src="${peli.url_portada}" width="40" height="55" style="border-radius:4px; object-fit:cover;">
                             <div>
                                 <h4 style="margin:0; font-size:14px; color:var(--text-main);">${peli.titulo}</h4>
@@ -255,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                 });
             } else {
-                searchResults.innerHTML = '<div style="padding:10px; text-align:center; color:var(--text-muted); font-size:13px;">No hay resultados 🍿</div>';
+                searchResults.innerHTML = '<div style="padding:10px; text-align:center; color:var(--text-muted); font-size:13px;">No hay resultados 🎓</div>';
             }
             searchResults.classList.add('active');
         });

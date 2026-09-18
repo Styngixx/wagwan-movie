@@ -262,6 +262,8 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('movieYear').value = peli.año_estreno;
             document.getElementById('movieDuration').value = peli.duracion;
             document.getElementById('movieRanking').value = peli.ranking || 10;
+            // NUEVO: Cargar la URL de YouTube si existe en la edición
+            document.getElementById('url_yt').value = peli.url_yt || ''; 
             document.getElementById('movieImage').required = false; 
             document.querySelector('#movieModal h2').textContent = 'Editar contenido';
             movieModal.classList.add('active');
@@ -277,6 +279,9 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('anio', document.getElementById('movieYear').value); 
         formData.append('duracion', document.getElementById('movieDuration').value);
         formData.append('ranking', document.getElementById('movieRanking').value);
+        
+        // NUEVO: Agregando la URL de YouTube al formData que se envía al servidor
+        formData.append('url_yt', document.getElementById('url_yt').value);
 
         const img = document.getElementById('movieImage').files[0];
         if (img) formData.append('imagen', img);

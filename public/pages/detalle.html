@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clase WAGWAN</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/css/index.css">
+</head>
+<body> 
+    <!-- BARRA DE NAVEGACIÓN COMPLETA -->
+    <header class="navbar">
+        <div class="logo" style="cursor:pointer;" onclick="window.location.href='/'">
+            <span class="play-icon">▶</span> WAGWAN
+        </div>
+        
+        <nav class="nav-links">
+            <a href="/">Inicio</a>
+            <a href="/#movies-container" class="active">Cursos</a>
+            <a href="/#series">Rutas de Aprendizaje</a>
+            <a href="/public/pages/favoritos.html">Mis Clases Guardadas</a>
+        </nav>
+
+        <div class="user-actions">
+            <!-- Selector de Tema -->
+            <div class="theme-toggle" id="themeToggle" title="Cambiar Tema">🌙</div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO DEL CURSO -->
+    <main class="course-container">
+        <div class="course-header">
+            <h1 id="curso-titulo" class="course-title">Cargando clase...</h1>
+            <div class="course-meta">
+                <span id="curso-genero">📚 Cargando...</span>
+                <span id="curso-anio">📅 Cargando...</span>
+            </div>
+        </div>
+
+        <div class="course-summary">
+            <h3 style="margin-top:0; color:var(--text-main); margin-bottom: 10px; font-size: 1.2rem;">Resumen de la clase</h3>
+            <p id="curso-resumen">Cargando el contenido explicativo...</p>
+        </div>
+
+        <div class="video-container">
+            <iframe id="curso-video" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </main>
+
+    <script src="/public/js/detalle.js"></script>
+    <script>
+        // Lógica para que el switch de tema oscuro funcione también en esta página
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        if (localStorage.getItem('wagwanTheme') === 'dark') {
+            body.classList.add('dark-mode');
+            themeToggle.textContent = '☀️';
+        }
+        
+        themeToggle?.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            themeToggle.textContent = isDark ? '☀️' : '🌙';
+            localStorage.setItem('wagwanTheme', isDark ? 'dark' : 'light');
+        });
+    </script>
+</body>
+</html>
