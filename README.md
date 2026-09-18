@@ -12,7 +12,7 @@
 
 WAGWAN Movie es una plataforma web para explorar, consultar y gestionar un catálogo de películas. La aplicación combina una experiencia de usuario enfocada en contenido cinematográfico con un panel administrativo para administrar la colección, cargar imágenes y controlar el estado del contenido.
 
-## ✨ Visión general
+## Visión general
 
 El proyecto está diseñado para ofrecer:
 
@@ -23,7 +23,7 @@ El proyecto está diseñado para ofrecer:
 - Gestión de autenticación para usuarios administradores
 - API REST para integración entre frontend y backend
 
-## 🚀 Funcionalidades principales
+## Funcionalidades principales
 
 - Catálogo de películas con navegación intuitiva
 - Vista individual de cada película
@@ -34,7 +34,7 @@ El proyecto está diseñado para ofrecer:
 - Carga de imágenes en almacenamiento remoto
 - Despliegue preparado para Vercel
 
-## 🛠️ Stack tecnológico
+## Stack tecnológico
 
 - Node.js
 - Express
@@ -47,7 +47,7 @@ El proyecto está diseñado para ofrecer:
 - CORS
 - Vercel
 
-## 📁 Estructura del proyecto
+## Estructura del proyecto
 
 ```text
 wagwan-movie/
@@ -68,7 +68,7 @@ wagwan-movie/
 └── .env
 ```
 
-## ⚙️ Requisitos previos
+## Requisitos previos
 
 Antes de ejecutar el proyecto, asegúrate de contar con:
 
@@ -80,7 +80,7 @@ Antes de ejecutar el proyecto, asegúrate de contar con:
   - bucket para almacenamiento de imágenes
   - tablas `peliculas` y `usuarios`
 
-## ▶️ Instalación y ejecución
+## Instalación y ejecución
 
 1. Clona el repositorio:
 
@@ -116,7 +116,7 @@ npm start
 npm run dev
 ```
 
-## 🌐 URLs de la aplicación
+## URLs de la aplicación
 
 Una vez levantado el servidor, podrás acceder a:
 
@@ -124,7 +124,7 @@ Una vez levantado el servidor, podrás acceder a:
 - API: `http://localhost:3600/api`
 - Administrador: `http://localhost:3600/admin`
 
-## 🔌 API principal
+## API principal
 
 ### Películas
 
@@ -139,7 +139,7 @@ Una vez levantado el servidor, podrás acceder a:
 
 - `POST /api/auth/login` — Inicia sesión del administrador
 
-## 🧩 Panel administrativo
+## Panel administrativo
 
 El panel permite:
 
@@ -150,29 +150,15 @@ El panel permite:
 - Cambiar el estado de contenido
 - Gestionar elementos destacados
 
-## 🚀 Despliegue
+## Despliegue
 
 El proyecto incluye configuración para desplegarse en Vercel mediante `vercel.json`. Para producción, asegúrate de configurar correctamente las variables de entorno en la plataforma.
 
-## 🧠 Consideraciones importantes
+## Consideraciones importantes
 
 - No guardar credenciales en el código fuente
 - Mantener `.env` fuera del repositorio
 - Verificar permisos y políticas de Supabase
 - Configurar el bucket de almacenamiento para imágenes correctamente
 
-## 📜 Licencia
 
-Este proyecto se distribuye bajo la licencia definida por el autor o el entorno de desarrollo en el que se publique. Consulta la licencia correspondiente del repositorio si aplica.
-
-## 👤 Autor
-
-Proyecto desarrollado como solución de catálogo y administración multimedia con enfoque académico y práctico.
-
----
-
-<div align="center">
-
-Hecho con ❤️ para gestión de contenido cinematográfico.
-
-</div>
