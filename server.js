@@ -3,8 +3,6 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path'); // <-- Volvemos a requerir path
 const movieRoutes = require('./src/routes/movie.routes');
-const authRoutes = require('./src/routes/auth.routes');
-
 const app = express();
 const PORT = process.env.PORT || 3600; 
 
@@ -13,9 +11,6 @@ app.use(express.json());
 
 // 1. RUTAS DE LA API (Siempre van primero para que el frontend no las bloquee)
 app.use('/api/peliculas', movieRoutes);
-app.use('/api/auth', authRoutes);
-// 1. RUTAS DE LA API
-app.use('/api', movieRoutes); // <-- Quítale el "/peliculas" a esta línea
 app.use('/api/auth', authRoutes);
 
 // 2. ARCHIVOS ESTÁTICOS (Devolvemos esto para que tu local pueda ver el HTML/CSS/JS)
