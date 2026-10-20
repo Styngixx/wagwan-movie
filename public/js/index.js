@@ -1,256 +1,285 @@
-import { movieCatalog } from './movies.js';
-
-function getFavoriteMovieIds() {
-    return JSON.parse(localStorage.getItem('favoriteMovies') || '[]');
-}
-
-// Función principal que renderiza el catálogo principal
-function renderMovieCatalog(category = 'Todas', searchQuery = '') {
-    const catalogElement = document.querySelector('#movie-catalog');
-
-    if (!catalogElement) {
-        return;
-    }
-
-    // 1. Filtramos por categoría
-    let filteredMovies = category === 'Todas'
-        ? movieCatalog
-        : movieCatalog.filter(movie => movie.genres.includes(category));
-
-    // 2. Filtramos por texto de búsqueda
-    if (searchQuery.trim() !== '') {
-        const query = searchQuery.toLowerCase().trim();
-        filteredMovies = filteredMovies.filter(movie => 
-            movie.title.toLowerCase().includes(query) ||
-            movie.genres.some(genre => genre.toLowerCase().includes(query))
-        );
-    }
-
-    if (filteredMovies.length === 0) {
-        catalogElement.innerHTML = '<p class="empty-catalog">No hay películas disponibles con esos criterios.</p>';
-        return;
-    }
-
-    const favoriteMovieIds = getFavoriteMovieIds();
-
-    catalogElement.innerHTML = filteredMovies.map(movie => `
-        <a class="card-ep" href="/public/pages/pelicula.html?id=${movie.id}" data-movie-id="${movie.id}">
-            <div class="ep-img" style="background-image: url('${movie.poster}')">
-                <span class="ep-badge">★ ${movie.rating}</span>
-                ${favoriteMovieIds.includes(movie.id) ? '<span class="favorite-indicator" title="Película favorita">♥</span>' : ''}
-            </div>
-            <div class="ep-title">${movie.title} (${movie.year})</div>
-        </a>
-    `).join('');
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-    renderMovieCatalog();
 
-    let currentCategory = 'Todas';
+    // === 1. TEMA GLOBAL ===
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    
+    const savedTheme = localStorage.getItem('wagwanTheme');
+    if (savedTheme === 'dark') {
+        body.classList.add('dark-mode');
+        if (themeToggle) themeToggle.textContent = '☀️';
+    } else {
+        body.classList.remove('dark-mode');
+        if (themeToggle) themeToggle.textContent = '🌙';
+    }
 
-    const movieFilters = document.querySelectorAll('.movie-filter');
-    movieFilters.forEach(filterButton => {
-        filterButton.addEventListener('click', () => {
-            movieFilters.forEach(button => button.classList.remove('active'));
-            filterButton.classList.add('active');
-            currentCategory = filterButton.dataset.category;
-            
-            const searchInput = document.querySelector('input[type="search"], input[placeholder*="Buscar"], .search-bar input');
-            const query = searchInput ? searchInput.value : '';
-            renderMovieCatalog(currentCategory, query);
-        });
+    themeToggle?.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        const isDark = body.classList.contains('dark-mode');
+        themeToggle.textContent = isDark ? '☀️' : '🌙';
+        localStorage.setItem('wagwanTheme', isDark ? 'dark' : 'light');
     });
 
-    // =========================================
-    // BÚSQUEDA DINÁMICA CON MENÚ FLOTANTE Y ESTÁTICA (ENTER)
-    // =========================================
-    const searchInput = document.querySelector('input[type="search"], input[placeholder*="Buscar"], .search-bar input');
+    // === 2. GESTIÓN DE SESIÓN ===
+    const btnEntrar = document.getElementById('btnEntrar');
+    const btnRegistro = document.getElementById('btnRegistro');
+    
+    const adminLogged = localStorage.getItem('adminLogged') === 'true';
+    const userLogged = localStorage.getItem('userLogged') === 'true';
 
-    if (searchInput) {
-        // Crear contenedor flotante para el autocompletado si no existe
-        let dropdown = document.querySelector('.search-dropdown-results');
-        if (!dropdown) {
-            dropdown = document.createElement('div');
-            dropdown.className = 'search-dropdown-results';
-            if (searchInput.parentElement) {
-                searchInput.parentElement.style.position = 'relative';
-                searchInput.parentElement.appendChild(dropdown);
-            }
+    if (adminLogged) {
+        if (btnEntrar) {
+            btnEntrar.textContent = 'Dashboard';
+            btnEntrar.style.color = 'var(--accent-blue)';
+            btnEntrar.style.fontWeight = 'bold';
+            btnEntrar.replaceWith(btnEntrar.cloneNode(true));
+            document.getElementById('btnEntrar').addEventListener('click', () => window.location.href = '/pages/admin.html');
         }
+        if (btnRegistro) {
+            btnRegistro.textContent = 'Cerrar Sesión';
+            btnRegistro.style.background = '#e74c3c';
+            btnRegistro.replaceWith(btnRegistro.cloneNode(true));
+            document.getElementById('btnRegistro').addEventListener('click', () => {
+                localStorage.clear();
+                window.location.reload();
+            });
+        }
+    } else if (userLogged) {
+        if (btnEntrar) btnEntrar.style.display = 'none';
+        if (btnRegistro) {
+            btnRegistro.textContent = 'Cerrar Sesión';
+            btnRegistro.style.background = '#e74c3c';
+            btnRegistro.replaceWith(btnRegistro.cloneNode(true));
+            document.getElementById('btnRegistro').addEventListener('click', () => {
+                localStorage.clear();
+                window.location.reload();
+            });
+        }
+    } else {
+        btnEntrar?.addEventListener('click', () => abrirModalAuth(true));
+        btnRegistro?.addEventListener('click', () => abrirModalAuth(false));
+    }
 
-        // Búsqueda dinámica mientras escribes
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase().trim();
+    // === 3. MODAL AUTENTICACIÓN ===
+    const authModal = document.getElementById('authModal');
+    const authForm = document.getElementById('authForm');
+    const authTitle = document.getElementById('authTitle');
+    const authDesc = document.getElementById('authDesc');
+    const authSubmitBtn = document.getElementById('authSubmitBtn');
+    let isLoginMode = true;
 
-            if (query === '') {
-                dropdown.classList.remove('active');
-                renderMovieCatalog(currentCategory, '');
-                return;
+    document.getElementById('authModalClose')?.addEventListener('click', () => authModal.style.display = 'none');
+
+    function abrirModalAuth(isLogin) {
+        isLoginMode = isLogin;
+        authTitle.textContent = isLogin ? 'Iniciar Sesión' : 'Registro Gratis';
+        authDesc.textContent = isLogin ? 'Ingresa a tu cuenta para ver tu contenido.' : 'Crea tu cuenta para disfrutar del contenido.';
+        authSubmitBtn.textContent = isLogin ? 'Entrar' : 'Registrarse';
+        document.getElementById('authError').textContent = '';
+        authModal.style.display = 'flex';
+    }
+
+    authForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const user = document.getElementById('authUsuario').value;
+        const pass = document.getElementById('authPassword').value;
+        const errorMsg = document.getElementById('authError');
+        
+        errorMsg.textContent = "⏳ Procesando...";
+        errorMsg.style.color = "#f1c40f";
+        
+        const endpoint = isLoginMode ? '/api/auth/login' : '/api/auth/registro';
+
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuario: user, password: pass, rol: 'user' }) 
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                errorMsg.style.color = "#2ecc71";
+                if (!isLoginMode) {
+                    errorMsg.textContent = "✅ Cuenta creada. Inicia sesión.";
+                    setTimeout(() => abrirModalAuth(true), 1500);
+                } else {
+                    errorMsg.textContent = "✅ Acceso concedido.";
+                    if (data.user.rol === 'admin') {
+                        localStorage.setItem('adminLogged', 'true');
+                        localStorage.setItem('adminUser', JSON.stringify(data.user));
+                        setTimeout(() => window.location.href = '/pages/admin.html', 1000);
+                    } else {
+                        localStorage.setItem('userLogged', 'true');
+                        localStorage.setItem('userData', JSON.stringify(data.user));
+                        setTimeout(() => window.location.reload(), 1000);
+                    }
+                }
+            } else {
+                errorMsg.textContent = "❌ " + data.message;
+                errorMsg.style.color = '#e74c3c';
             }
+        } catch (error) {
+            errorMsg.textContent = '🔌 Error de conexión con el servidor.';
+            errorMsg.style.color = '#e74c3c';
+        }
+    });
 
-            const filtered = movieCatalog.filter(movie => 
-                movie.title.toLowerCase().includes(query) ||
-                movie.genres.some(genre => genre.toLowerCase().includes(query))
-            );
+    // === 4. CARGA DE CATÁLOGO Y RUTAS ===
+    let todasLasPeliculas = [];
 
-            if (filtered.length === 0) {
-                dropdown.innerHTML = '<p style="padding: 10px; color: #94a3b8; text-align: center; font-size: 13px;">No se encontraron resultados</p>';
-                dropdown.classList.add('active');
-                return;
-            }
+    async function cargarTodaLaData() {
+        try {
+            const response = await fetch('/api/peliculas');
+            todasLasPeliculas = await response.json();
 
-            // Renderizamos las sugerencias idénticas al diseño de streaming solicitado
-            dropdown.innerHTML = filtered.slice(0, 4).map(movie => `
-                <a href="/public/pages/pelicula.html?id=${movie.id}" class="search-result-item">
-                    <img src="${movie.poster}" alt="${movie.title}" class="search-result-img">
-                    <div class="search-result-info">
-                        <h4>${movie.title} (${movie.year})</h4>
-                        <p>Película &nbsp; ⏱ ${movie.duration || '1h 45m'} &nbsp; ★ ${movie.rating}</p>
-                        <p style="font-size: 11px; color: #64748b;">🛡 ${movie.year}</p>
+            const catalogo = todasLasPeliculas.filter(p => p.estado === 'Activo' || !p.estado);
+            renderizarCatalogo(catalogo);
+            activarFiltros(catalogo);
+
+            const banners = todasLasPeliculas.filter(p => p.estado_banner === 'Activo');
+            iniciarCarruselBanners(banners);
+
+            const tops = todasLasPeliculas.filter(p => p.estado_top === 'Activo');
+            renderizarTopEstrenos(tops);
+
+            activarBuscador(catalogo);
+
+        } catch (error) { console.error("Error cargando la data:", error); }
+    }
+
+    function renderizarCatalogo(lista) {
+        const container = document.getElementById('movies-container');
+        if (!container) return;
+        container.innerHTML = '';
+
+        lista.forEach(pelicula => {
+            container.innerHTML += `
+                <a href="/pages/detalle.html?id=${pelicula.id}" style="text-decoration: none; color: inherit; display: block;" class="card-ep">
+                    <div class="ep-img" style="background-image: url('${pelicula.url_portada}');">
+                        <span class="ep-badge">⭐ ${pelicula.ranking || 10}/10</span>
+                    </div>
+                    <div style="padding: 8px 5px;">
+                        <h3 style="font-size:14px; margin-bottom:2px; color:var(--text-main);">${pelicula.titulo}</h3>
+                        <p style="font-size:12px; color:var(--text-muted);">📅 ${pelicula.año_estreno} | 📚 ${pelicula.genero}</p>
                     </div>
                 </a>
-            `).join('') + `
-                <a href="#" class="search-all-btn" onclick="event.preventDefault();">Ver todos los resultados</a>
             `;
-
-            dropdown.classList.add('active');
-            renderMovieCatalog(currentCategory, query);
-        });
-
-        // Búsqueda estática al presionar Enter
-        searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                dropdown.classList.remove('active');
-                const query = searchInput.value;
-                renderMovieCatalog(currentCategory, query);
-            }
-        });
-
-        // Ocultar menú flotante al hacer clic fuera
-        document.addEventListener('click', (e) => {
-            if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
-                dropdown.classList.remove('active');
-            }
         });
     }
-    
-    // =========================================
-    // CAMBIO DE TEMA (MODO OSCURO / CLARO)
-    // =========================================
-    const themeToggle = document.querySelector('.theme-toggle');
-    const body = document.body;
 
-    if (themeToggle) {
-        if (body.classList.contains('dark-mode')) {
-            themeToggle.textContent = '☀️'; 
-        } else {
-            themeToggle.textContent = '🌙'; 
+    function iniciarCarruselBanners(banners) {
+        const container = document.getElementById('heroBannerContainer');
+        if (!container || banners.length === 0) {
+            if(container) container.style.display = 'none';
+            return;
         }
+
+        let index = 0;
+        function cambiarBanner() {
+            const peli = banners[index];
+            container.style.backgroundImage = `var(--hero-overlay), url('${peli.url_portada}')`;
+            container.innerHTML = `
+                <div class="hero-content" style="animation: fadeIn 0.5s ease;">
+                    <h1>${peli.titulo}</h1>
+                    <div class="meta-info">
+                        <span class="rating">⭐ ${peli.ranking || 10}/10</span>
+                        <span class="year">${peli.año_estreno}</span>
+                        <span>${peli.genero}</span>
+                        <span class="quality">HD</span>
+                    </div>
+                    <button class="btn-primary" onclick="window.location.href='/pages/detalle.html?id=${peli.id}'">▶ Ver Clase</button>
+                </div>
+            `;
+            index = (index + 1) % banners.length; 
+        }
+
+        cambiarBanner(); 
+        setInterval(cambiarBanner, 6000); 
+    }
+
+    function renderizarTopEstrenos(tops) {
+        const container = document.getElementById('topEstrenosContainer');
+        if (!container) return;
+        container.innerHTML = '';
         
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
+        const top5 = tops.slice(0, 5); 
+
+        top5.forEach((peli, i) => {
+            container.innerHTML += `
+                <div class="top-item" style="cursor:pointer;" onclick="window.location.href='/pages/detalle.html?id=${peli.id}'">
+                    <div class="top-img" style="background-image: url('${peli.url_portada}');">
+                        <span class="rank">#${i + 1}</span>
+                    </div>
+                    <div class="top-info">
+                        <h4 style="color:var(--text-main); font-size: 13px;">${peli.titulo}</h4>
+                        <span class="top-meta">Clase ★ ${peli.ranking || 10}</span>
+                        <span class="top-year">${peli.año_estreno}</span>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function activarBuscador(listaCatalogo) {
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+        if (!searchInput || !searchResults) return;
+
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase().trim();
+            searchResults.innerHTML = '';
             
-            if (body.classList.contains('dark-mode')) {
-                themeToggle.textContent = '☀️'; 
-                themeToggle.title = "Cambiar a Modo Claro";
+            if (!term) {
+                searchResults.classList.remove('active');
+                return;
+            }
+
+            const matches = listaCatalogo.filter(p => p.titulo.toLowerCase().includes(term));
+
+            if (matches.length > 0) {
+                matches.slice(0, 5).forEach(peli => {
+                    const tipoLabel = peli.tipo === 'serie' ? 'Ruta' : 'Clase';
+                    searchResults.innerHTML += `
+                        <a href="/pages/detalle.html?id=${peli.id}" class="search-result-item" style="text-decoration:none;">
+                            <img src="${peli.url_portada}" width="40" height="55" style="border-radius:4px; object-fit:cover;">
+                            <div>
+                                <h4 style="margin:0; font-size:14px; color:var(--text-main);">${peli.titulo}</h4>
+                                <p style="margin:0; font-size:12px; color:var(--accent-blue); font-weight:bold;">${tipoLabel} <span style="color:var(--text-muted); font-weight:normal;">| 📅 ${peli.año_estreno} | ⭐ ${peli.ranking || 10}</span></p>
+                            </div>
+                        </a>
+                    `;
+                });
             } else {
-                themeToggle.textContent = '🌙';
-                themeToggle.title = "Cambiar a Modo Oscuro";
+                searchResults.innerHTML = '<div style="padding:10px; text-align:center; color:var(--text-muted); font-size:13px;">No hay resultados 🎓</div>';
+            }
+            searchResults.classList.add('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container')) {
+                searchResults.classList.remove('active');
             }
         });
     }
 
-    // Simulación de reproducción
-    const playButton = document.querySelector('.btn-primary');
-    if (playButton) {
-        playButton.addEventListener('click', () => {
-            alert("▶ Iniciando película...");
-        });
-    }
+    function activarFiltros(listaCatalogo) {
+        const filterButtons = document.querySelectorAll('.movie-filter');
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
 
-    // =========================================
-    // MODAL LOGIN ADMINISTRADOR
-    // =========================================
-    const adminDashboardLink = document.getElementById('adminDashboardLink');
-    const adminModal = document.getElementById('adminModal');
-    const adminModalClose = document.getElementById('adminModalClose');
-
-    if (adminDashboardLink && adminModal && adminModalClose) {
-        adminDashboardLink.addEventListener('click', (event) => {
-            event.preventDefault();
-            adminModal.classList.add('active');
-        });
-
-        adminModalClose.addEventListener('click', () => {
-            adminModal.classList.remove('active');
-        });
-
-        adminModal.addEventListener('click', (event) => {
-            if (event.target === adminModal) {
-                adminModal.classList.remove('active');
-            }
-        });
-
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
-                adminModal.classList.remove('active');
-            }
-        });
-    }
-
-    // =========================================
-    // VALIDAR LOGIN DEL ADMINISTRADOR
-    // =========================================
-    const adminLoginForm = document.getElementById('adminLoginForm');
-    const adminUsuario = document.getElementById('adminUsuario');
-    const adminPassword = document.getElementById('adminPassword');
-    const adminLoginError = document.getElementById('adminLoginError');
-
-    if (adminLoginForm) {
-        adminLoginForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-
-            const usuarioIngresado = adminUsuario.value.trim();
-            const passwordIngresado = adminPassword.value.trim();
-
-            adminLoginError.textContent = '';
-
-            try {
-                const response = await fetch('public/data/admins.json');
-
-                if (!response.ok) {
-                    throw new Error('No se pudo cargar el archivo de administradores');
-                }
-
-                const admins = await response.json();
-
-                const adminValido = admins.find(admin =>
-                    admin.usuario === usuarioIngresado &&
-                    admin.password === passwordIngresado
-                );
-
-                if (adminValido) {
-                    localStorage.setItem('adminLogged', 'true');
-
-                    adminLoginError.style.color = '#4ade80';
-                    adminLoginError.textContent = 'Acceso correcto';
-
-                    setTimeout(() => {
-                        window.location.href = 'public/pages/admin.html';
-                    }, 800);
-
+                const category = btn.getAttribute('data-category');
+                if (category === 'Todas') {
+                    renderizarCatalogo(listaCatalogo);
                 } else {
-                    adminLoginError.style.color = '#ff6b6b';
-                    adminLoginError.textContent = 'Usuario o contraseña incorrectos';
+                    const filtradas = listaCatalogo.filter(p => p.genero.includes(category));
+                    renderizarCatalogo(filtradas);
                 }
-
-            } catch (error) {
-                console.error(error);
-                adminLoginError.style.color = '#ff6b6b';
-                adminLoginError.textContent = 'Error al validar las credenciales';
-            }
+            });
         });
     }
+
+    cargarTodaLaData();
 });

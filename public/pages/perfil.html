@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi perfil | WAGWAN</title>
+
+  <link rel="stylesheet" href="/public/css/index.css">
+  <link rel="stylesheet" href="/public/css/user.css">
+</head>
+
+<body class="dark-mode user-page">
+  <header class="navbar">
+    <a class="logo" href="/index.html">
+      <span class="play-icon">▶</span> WAGWAN
+    </a>
+
+    <nav aria-label="Navegación principal">
+      <a href="/index.html">Inicio</a>
+      <a href="/index.html#movie-catalog">Películas</a>
+      <a href="/public/pages/favoritos.html">Favoritos</a>
+      <a href="/public/pages/perfil.html" aria-current="page">
+        Mi perfil
+      </a>
+    </nav>
+  </header>
+
+  <main class="user-shell" id="profile-main" hidden>
+    <div class="profile-heading">
+      <div>
+        <span class="u-kicker">MI CUENTA</span>
+        <h1>Tu espacio en WAGWAN</h1>
+        <p class="u-muted">
+          Un perfil tan único como tus gustos.
+        </p>
+      </div>
+
+      <a class="u-secondary" href="/index.html">
+        Volver al inicio
+      </a>
+    </div>
+
+    <div class="profile-layout">
+      <aside class="u-card profile-summary">
+        <div class="u-avatar" id="avatar"></div>
+
+        <h2 id="summary-name"></h2>
+        <p class="u-muted" id="summary-email"></p>
+
+        <span class="u-pill">● Sesión iniciada</span>
+        <p class="u-muted" id="member-since"></p>
+
+        <div class="u-divider"></div>
+
+        <a
+          class="u-side-link active"
+          href="/public/pages/perfil.html"
+          aria-current="page">
+          ◎ Mi perfil
+        </a>
+
+        <a
+          class="u-side-link"
+          href="/public/pages/favoritos.html">
+          ♡ Ver favoritos
+        </a>
+
+        <div class="u-divider"></div>
+
+        <button
+          class="u-secondary u-wide"
+          id="logout"
+          type="button">
+          Cerrar sesión
+        </button>
+      </aside>
+
+      <section class="u-card">
+        <span class="u-kicker">INFORMACIÓN PERSONAL</span>
+
+        <h2 style="margin-top: 12px;">Un poco más sobre ti</h2>
+
+        <p class="u-muted">
+          Consulta y actualiza los datos de tu cuenta.
+        </p>
+
+        <form id="profile-form">
+          <div class="u-form-grid">
+            <label class="u-field">
+              Nombre completo
+              <input
+                name="name"
+                required
+                minlength="2"
+                maxlength="60"
+                autocomplete="name">
+            </label>
+
+            <label class="u-field">
+              Correo electrónico
+              <input
+                name="email"
+                type="email"
+                required
+                maxlength="120"
+                autocomplete="email">
+            </label>
+
+            <label class="u-field">
+              Género favorito
+              <select name="genre">
+                <option>Acción</option>
+                <option>Aventura</option>
+                <option>Drama</option>
+                <option>Romance</option>
+                <option>Comedia</option>
+                <option>Terror</option>
+                <option>Suspenso</option>
+              </select>
+            </label>
+
+            <label class="u-field">
+              Color de tu avatar
+              <select name="color">
+                <option value="#2563eb">Azul eléctrico</option>
+                <option value="#7c3aed">Violeta</option>
+                <option value="#047857">Verde cine</option>
+                <option value="#be185d">Rosa</option>
+              </select>
+            </label>
+
+            <label class="u-field full">
+              Acerca de ti
+              <textarea
+                name="bio"
+                maxlength="240"
+                placeholder="¿Qué hace que una película sea inolvidable para ti?"
+              ></textarea>
+
+              <span class="u-muted" style="font-size: 12px;">
+                Máximo 240 caracteres.
+              </span>
+            </label>
+          </div>
+
+          <p
+            class="u-message"
+            id="profile-message"
+            role="status"
+            aria-live="polite">
+          </p>
+
+          <div class="u-form-actions">
+            <button
+              class="u-secondary"
+              type="button"
+              id="cancel">
+              Cancelar cambios
+            </button>
+
+            <button class="u-primary" type="submit">
+              Guardar cambios
+            </button>
+          </div>
+        </form>
+
+        <p class="u-note">
+          Tus cambios se conservarán en este navegador.
+          Los favoritos pertenecen a la colección local del proyecto.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <p
+    id="profile-loading"
+    class="user-shell u-muted"
+    role="status">
+    Comprobando tu sesión…
+  </p>
+
+  <footer class="u-foot">
+    © 2026 WAGWAN · Tu próxima historia empieza aquí.
+  </footer>
+
+  <script type="module" src="/public/js/user-profile.js"></script>
+</body>
+</html>
