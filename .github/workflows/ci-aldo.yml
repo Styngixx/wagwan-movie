@@ -1,0 +1,30 @@
+name: CI - Aldo
+
+on:
+  push:
+    branches: [ "main", "master", "Mestanza" ]
+  workflow_dispatch: 
+
+jobs:
+  verificacion_individual:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Registro de autoría
+        run: |
+          echo "========================================"
+          echo "Flujo de Integración Continua"
+          echo "Responsable: Aldo"
+          echo "========================================"
+
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Crear archivo .env temporal
+        run: touch .env
+
+      - name: Construir proyecto con Docker Compose
+        run: docker compose build
