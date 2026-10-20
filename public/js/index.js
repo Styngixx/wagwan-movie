@@ -20,20 +20,18 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('wagwanTheme', isDark ? 'dark' : 'light');
     });
 
-    // === 2. MANEJO DE SESIÓN Y BOTONES ===
+    // === 2. GESTIÓN DE SESIÓN ===
     const btnEntrar = document.getElementById('btnEntrar');
     const btnRegistro = document.getElementById('btnRegistro');
     
     const adminLogged = localStorage.getItem('adminLogged') === 'true';
     const userLogged = localStorage.getItem('userLogged') === 'true';
 
-    // Si hay alguien logueado, transformamos los botones
     if (adminLogged) {
         if (btnEntrar) {
             btnEntrar.textContent = 'Dashboard';
             btnEntrar.style.color = 'var(--accent-blue)';
             btnEntrar.style.fontWeight = 'bold';
-            // Clonamos para limpiar eventos previos
             btnEntrar.replaceWith(btnEntrar.cloneNode(true));
             document.getElementById('btnEntrar').addEventListener('click', () => window.location.href = '/pages/admin.html');
         }
@@ -47,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     } else if (userLogged) {
-        if (btnEntrar) btnEntrar.style.display = 'none'; // Ocultamos "Entrar" al usuario normi
+        if (btnEntrar) btnEntrar.style.display = 'none';
         if (btnRegistro) {
             btnRegistro.textContent = 'Cerrar Sesión';
             btnRegistro.style.background = '#e74c3c';
@@ -58,11 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     } else {
-        // Si no hay nadie logueado, abren el modal normal
         btnEntrar?.addEventListener('click', () => abrirModalAuth(true));
         btnRegistro?.addEventListener('click', () => abrirModalAuth(false));
     }
-
 
     // === 3. MODAL AUTENTICACIÓN ===
     const authModal = document.getElementById('authModal');
@@ -129,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // === 4. CARGA DE CURSOS, BANNERS, TOP Y BUSCADOR ===
+    // === 4. CARGA DE CATÁLOGO Y RUTAS ===
     let todasLasPeliculas = [];
 
     async function cargarTodaLaData() {
@@ -158,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
         container.innerHTML = '';
 
         lista.forEach(pelicula => {
-            // Modificamos el enlace y el estilo para que toda la tarjeta sea clickeable
             container.innerHTML += `
                 <a href="/pages/detalle.html?id=${pelicula.id}" style="text-decoration: none; color: inherit; display: block;" class="card-ep">
                     <div class="ep-img" style="background-image: url('${pelicula.url_portada}');">
@@ -244,7 +239,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (matches.length > 0) {
                 matches.slice(0, 5).forEach(peli => {
-                    // Cambiamos el texto Serie/Película por Ruta/Clase (Opcional, pero consistente)
                     const tipoLabel = peli.tipo === 'serie' ? 'Ruta' : 'Clase';
                     searchResults.innerHTML += `
                         <a href="/pages/detalle.html?id=${peli.id}" class="search-result-item" style="text-decoration:none;">

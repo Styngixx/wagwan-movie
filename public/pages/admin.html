@@ -20,27 +20,24 @@
 <body>
 
     <div class="admin-layout">
-        <!-- SIDEBAR -->
         <aside class="admin-sidebar">
             <div class="admin-logo">
                 <span class="play-icon">▶</span><span>WAGWAN</span>
             </div>
             <nav class="admin-menu">
-                <a href="#" class="admin-menu-link active" data-target="panel-catalogo">🎬 Catálogo Principal</a>
+                <a href="#" class="admin-menu-link active" data-target="panel-catalogo">📚 Gestión de Cursos</a>
                 <a href="#" class="admin-menu-link" data-target="panel-banners">🖼️ Banners Hero</a>
-                <a href="#" class="admin-menu-link" data-target="panel-tops">⭐ Top Estrenos</a>
+                <a href="#" class="admin-menu-link" data-target="panel-tops">⭐ Top Cursos</a>
                 <a href="/" class="admin-menu-link">🌐 Ver sitio público</a>
             </nav>
             <button class="admin-logout" id="adminLogout">Cerrar sesión</button>
         </aside>
 
-        <!-- MAIN CONTENT -->
         <main class="admin-main">
-            <!-- HEADER -->
             <header class="admin-header">
                 <div>
-                    <h1 id="panelTitle">Catálogo Principal</h1>
-                    <p id="panelDesc">Gestiona la bóveda general de películas y series.</p>
+                    <h1 id="panelTitle">Gestión de Cursos</h1>
+                    <p id="panelDesc">Administra los cursos, materiales didácticos y clases en video.</p>
                 </div>
                 <div class="admin-header-right">
                     <div class="theme-toggle" id="adminThemeToggle" title="Cambiar Tema" style="cursor:pointer; font-size: 1.5rem;">☀️</div>
@@ -51,31 +48,30 @@
                 </div>
             </header>
 
-            <!-- ESTADÍSTICAS -->
             <section class="admin-stats">
-                <div class="stat-card"><span class="stat-title">Total contenido BD</span><strong class="stat-number" id="totalMovies">0</strong></div>
-                <div class="stat-card"><span class="stat-title">Géneros</span><strong class="stat-number" id="totalGenres">0</strong></div>
-                <div class="stat-card"><span class="stat-title">Estrenos 2026</span><strong class="stat-number" id="total2026">0</strong></div>
+                <div class="stat-card"><span class="stat-title">Total Clases en BD</span><strong class="stat-number" id="totalMovies">0</strong></div>
+                <div class="stat-card"><span class="stat-title">Categorías</span><strong class="stat-number" id="totalGenres">0</strong></div>
+                <div class="stat-card"><span class="stat-title">Lanzamientos 2026</span><strong class="stat-number" id="total2026">0</strong></div>
             </section>
 
             <!-- PANEL 1: CATÁLOGO PRINCIPAL -->
             <section class="movies-management admin-panel active" id="panel-catalogo">
                 <div class="section-title">
-                    <div><h2>Películas y Series en la BD</h2><p>Agrega, modifica o suspende del sistema.</p></div>
-                    <button class="btn-add-movie" id="btnAddMovie">+ Nueva a la BD</button>
+                    <div><h2>Cursos y Clases Registradas</h2><p>Agrega, edita o elimina contenido educativo.</p></div>
+                    <button class="btn-add-movie" id="btnAddMovie">+ Nueva Clase/Curso</button>
                 </div>
                 <div class="movies-table-container">
                     <table class="movies-table">
-                        <thead><tr><th>Portada</th><th>Título</th><th>Género</th><th>Año</th><th>Estado BD</th><th>Acciones</th></tr></thead>
+                        <thead><tr><th>Portada</th><th>Título</th><th>Categoría</th><th>Año</th><th>Estado BD</th><th>Acciones</th></tr></thead>
                         <tbody id="moviesTableBody"></tbody>
                     </table>
                 </div>
             </section>
 
-            <!-- PANEL 2: BANNERS HERO -->
+            <!-- PANEL 2: BANNERS -->
             <section class="movies-management admin-panel" id="panel-banners">
                 <div class="section-title">
-                    <div><h2>Películas en Banner</h2><p>Elige qué contenido de la BD mostrar en el inicio.</p></div>
+                    <div><h2>Cursos en Banner Principal</h2><p>Destaca contenidos en el slider inicial.</p></div>
                     <button class="btn-add-movie btn-vitrina" data-tipo="banner">+ Asignar al Banner</button>
                 </div>
                 <div class="movies-table-container">
@@ -89,7 +85,7 @@
             <!-- PANEL 3: TOP ESTRENOS -->
             <section class="movies-management admin-panel" id="panel-tops">
                 <div class="section-title">
-                    <div><h2>Top Estrenos</h2><p>Arma tu cartelera lateral de Top Estrenos.</p></div>
+                    <div><h2>Top Cursos</h2><p>Selecciona los cursos más recomendados.</p></div>
                     <button class="btn-add-movie btn-vitrina" data-tipo="top">+ Asignar al Top</button>
                 </div>
                 <div class="movies-table-container">
@@ -102,85 +98,94 @@
         </main>
     </div>
 
-    <!-- MODAL 1: CRUD BASE DE DATOS (COMPLETO) -->
+    <!-- MODAL DE CREACIÓN / EDICIÓN -->
     <div class="movie-modal" id="movieModal">
-        <div class="movie-modal-content">
+        <div class="movie-modal-content" style="max-width: 650px;">
             <button class="movie-modal-close" id="movieModalClose" title="Cerrar">&times;</button>
-            <h2>Agregar contenido a BD</h2>
+            <h2>Agregar contenido</h2>
             
             <form id="movieForm">
                 <div class="movie-form-group">
-                    <label for="movieTitle">Título</label>
-                    <input type="text" id="movieTitle" placeholder="Ej: Interstellar" required>
+                    <label for="movieTitle">Título de la Clase / Curso</label>
+                    <input type="text" id="movieTitle" placeholder="Ej: Semana 01 - Estructuras de Datos" required>
                 </div>
 
                 <div class="movie-form-row">
                     <div class="movie-form-group">
                         <label for="movieTipo">Tipo</label>
                         <select id="movieTipo" required>
-                            <option value="pelicula" selected>Película</option>
-                            <option value="serie">Serie</option>
+                            <option value="pelicula" selected>Clase / Curso</option>
+                            <option value="serie">Ruta Completa</option>
                         </select>
                     </div>
                     <div class="movie-form-group">
-                        <label for="movieGenre">Género</label>
+                        <label for="movieGenre">Categoría</label>
                         <select id="movieGenre" required>
                             <option value="" disabled selected>Seleccionar...</option>
-                            <option value="Acción">Acción</option>
-                            <option value="Aventura">Aventura</option>
-                            <option value="Biografía">Biografía</option>
-                            <option value="Comedia">Comedia</option>
-                            <option value="Drama">Drama</option>
-                            <option value="Ciencia Ficción">Ciencia Ficción</option>
-                            <option value="Suspenso">Suspenso</option>
-                            <option value="Programación">Programación</option> <!-- Agregué Programación aquí por si acaso -->
+                            <option value="Programación">Programación</option>
+                            <option value="Algoritmos">Algoritmos</option>
+                            <option value="Bases de Datos">Bases de Datos</option>
+                            <option value="Redes">Redes de Comunicación</option>
+                            <option value="Ingeniería de Software">Ingeniería de Software</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="movie-form-row">
                     <div class="movie-form-group">
-                        <label for="movieYear">Año de Estreno</label>
+                        <label for="movieYear">Año de Publicación</label>
                         <input type="number" id="movieYear" min="1900" max="2100" placeholder="2026" required>
                     </div>
                     <div class="movie-form-group">
-                        <label for="movieDuration">Duración (min)</label>
-                        <input type="number" id="movieDuration" placeholder="Ej: 145" required>
+                        <label for="movieDuration">Duración estimada (min)</label>
+                        <input type="number" id="movieDuration" placeholder="Ej: 90" required>
                     </div>
                 </div>
 
                 <div class="movie-form-group">
-                    <label for="movieRanking">Ranking (1 al 10)</label>
-                    <input type="number" id="movieRanking" min="1" max="10" placeholder="Ej: 8" required>
+                    <label for="movieRanking">Valoración (1 al 10)</label>
+                    <input type="number" id="movieRanking" min="1" max="10" placeholder="Ej: 9" required>
                 </div>
 
-                <!-- CAMPO NUEVO PARA YOUTUBE -->
+                <!-- CAMPO RESUMEN (SINOPSIS EN BD) -->
                 <div class="movie-form-group">
-                    <label for="url_yt">URL de YouTube</label>
-                    <input type="url" id="url_yt" placeholder="Ej: https://www.youtube.com/watch?v=..." required style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--border-light); background:var(--bg-secondary); color:var(--text-main); outline:none;">
+                    <label for="movieSinopsis">Resumen de la Clase (Sinopsis)</label>
+                    <textarea id="movieSinopsis" rows="3" placeholder="Escribe los temas que se tratarán en esta sesión..." style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--border-light); background:var(--bg-secondary); color:var(--text-main); outline:none; resize: vertical;"></textarea>
                 </div>
 
+                <!-- ENLACE DE YOUTUBE -->
                 <div class="movie-form-group">
-                    <label for="movieImage">Carátula Oficial</label>
-                    <input type="file" id="movieImage" accept="image/*" style="padding: 10px; background:var(--bg-secondary); border:1px solid var(--border-light); border-radius:8px; color:var(--text-main);">
+                    <label for="url_yt">URL de YouTube (Video de la clase)</label>
+                    <input type="url" id="url_yt" placeholder="https://www.youtube.com/watch?v=..." style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--border-light); background:var(--bg-secondary); color:var(--text-main); outline:none;">
+                </div>
+
+                <!-- SUBIDA DE DOCUMENTOS -->
+                <div class="movie-form-group">
+                    <label for="movieDocumento">Material Diapositivas / Guía (PDF, PPT, PPTX, DOCX)</label>
+                    <input type="file" id="movieDocumento" accept=".pdf,.doc,.docx,.ppt,.pptx" style="padding: 10px; background:var(--bg-secondary); border:1px solid var(--border-light); border-radius:8px; color:var(--text-main); width: 100%;">
+                    <div id="docActualInfo" style="font-size: 12px; color: var(--accent-blue); margin-top: 5px; display: none;"></div>
+                </div>
+
+                <!-- CARÁTULA -->
+                <div class="movie-form-group">
+                    <label for="movieImage">Imagen de Portada</label>
+                    <input type="file" id="movieImage" accept="image/*" style="padding: 10px; background:var(--bg-secondary); border:1px solid var(--border-light); border-radius:8px; color:var(--text-main); width: 100%;">
                 </div>
 
                 <p class="movie-form-error" id="movieFormError"></p>
-                <button type="submit" class="movie-save-button">Guardar en Base de Datos</button>
+                <button type="submit" class="movie-save-button">Guardar Cambios</button>
             </form>
         </div>
     </div>
 
-    <!-- MODAL 2: BUSCADOR PARA VITRINAS -->
+    <!-- MODAL BUSCADOR DE VITRINAS -->
     <div class="movie-modal" id="vitrinaModal">
         <div class="movie-modal-content" style="max-width: 600px;">
             <button class="movie-modal-close" id="vitrinaModalClose" title="Cerrar">&times;</button>
-            <h2 id="vitrinaTitle">Asignar Película</h2>
-            <p style="color:var(--text-muted); font-size:13px; margin-bottom:15px;">Busca en tu bóveda y añádela a esta sección.</p>
+            <h2 id="vitrinaTitle">Asignar Contenido</h2>
+            <p style="color:var(--text-muted); font-size:13px; margin-bottom:15px;">Selecciona la clase que aparecerá en esta vitrina.</p>
             <input type="text" id="vitrinaSearch" placeholder="Escribe el título..." style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--border-light); margin-bottom:15px; background:var(--bg-secondary); color:var(--text-main); outline:none;">
-            <div id="vitrinaResults" style="max-height: 350px; overflow-y: auto;">
-                <!-- Resultados inyectados por JS -->
-            </div>
+            <div id="vitrinaResults" style="max-height: 350px; overflow-y: auto;"></div>
         </div>
     </div>
 
