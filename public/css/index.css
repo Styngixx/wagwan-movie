@@ -162,3 +162,8 @@ a {
 .nav-links a { position: relative; }
 .nav-links a::after { content: ""; position: absolute; left: 0; bottom: -4px; width: 0; height: 2px; background: var(--accent-blue); transition: width 0.25s ease; }
 .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+
+/* Botones */
+.btn-blue-register, .btn-primary { transition: transform 0.15s ease, filter 0.2s ease; }
+.btn-blue-register:hover, .btn-primary:hover { filter: brightness(1.1); transform: translateY(-2px); }
+.btn-blue-register:active, .btn-primary:active { transform: scale(0.97); }
