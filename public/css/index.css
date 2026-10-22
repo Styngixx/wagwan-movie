@@ -1112,3 +1112,8 @@ body {
 .navbar nav a:not(.admin-link) { position: relative; }
 .navbar nav a:not(.admin-link)::after { content: ""; position: absolute; left: 0; bottom: -4px; width: 0; height: 2px; background: var(--accent-blue); transition: width 0.25s ease; }
 .navbar nav a:not(.admin-link):hover::after { width: 100%; }
+
+/* Botones */
+.btn-login, .btn-primary { transition: transform 0.15s ease, filter 0.2s ease; }
+.btn-login:hover, .btn-primary:hover { filter: brightness(1.15); transform: translateY(-2px); }
+.btn-login:active, .btn-primary:active { transform: scale(0.97); }
