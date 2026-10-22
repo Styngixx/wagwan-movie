@@ -1102,22 +1102,4 @@ body {
 
 .search-all-btn:hover {
     background-color: #1d4ed8;
-
-/* Hover en tarjetas */
-.card-ep { transition: transform .25s ease, box-shadow .25s ease; }
-.card-ep:hover { transform: translateY(-6px); box-shadow: 0 12px 24px rgba(0,0,0,.15); }
-
-/* Subrayado animado en el menu */
-.nav-links a { position: relative; }
-.nav-links a::after { content:""; position:absolute; left:0; bottom:-4px; width:0; height:2px; background:var(--accent-blue); transition:width .25s; }
-.nav-links a:hover::after, .nav-links a.active::after { width:100%; }
-
-/* Botones */
-.btn-blue-register, .btn-primary { transition: transform .15s, filter .2s; }
-.btn-blue-register:hover, .btn-primary:hover { filter: brightness(1.1); transform: translateY(-2px); }
-.btn-blue-register:active, .btn-primary:active { transform: scale(.97); }
-
-/* Buscador */
-.search-box:focus-within { box-shadow: 0 0 0 3px var(--accent-blue); }
-.search-result-item:hover { background: var(--surface-hover); }
 }
