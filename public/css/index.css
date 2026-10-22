@@ -1117,3 +1117,9 @@ body {
 .btn-login, .btn-primary { transition: transform 0.15s ease, filter 0.2s ease; }
 .btn-login:hover, .btn-primary:hover { filter: brightness(1.15); transform: translateY(-2px); }
 .btn-login:active, .btn-primary:active { transform: scale(0.97); }
+
+/* Scroll suave y scrollbar */
+html { scroll-behavior: smooth; }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-thumb { background: var(--accent-blue); border-radius: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
