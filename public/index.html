@@ -3,49 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WAGWAN - Plataforma de Cursos</title>
+    <title>Wawa Movie - Plataforma de Cursos</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Vinculando tu archivo CSS original -->
     <link rel="stylesheet" href="/public/css/index.css">
 </head>
-<body> 
+<body class="dark-mode"> 
     <!-- BARRA DE NAVEGACIÓN -->
     <header class="navbar">
-        <div class="logo">
-            <span class="play-icon">▶</span> WAGWAN
+        <div class="nav-brand-wrapper">
+            <a href="/" class="logo">
+                <span class="play-icon">▶</span> WAGWAN
+            </a>
+            <!-- Botón de Menú Móvil -->
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menú">
+                <svg viewBox="0 0 24 24" width="26" height="26" stroke="currentColor" stroke-width="2.5" fill="none">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
         </div>
         
-        <!-- Menú Minimalista -->
-        <nav class="nav-links">
+        <nav class="nav-links" id="navLinksMenu">
             <a href="/" class="active">Inicio</a>
             <a href="#movies-container">Cursos</a>
             <a href="#series">Rutas de Aprendizaje</a>
             <a href="/public/pages/favoritos.html">Mis Clases Guardadas</a>
         </nav>
 
-        <div class="user-actions">
-            <!-- Buscador estilo píldora -->
+        <div class="user-actions" id="userActionsMenu">
             <div class="search-container">
                 <div class="search-box">
                     <input type="text" id="searchInput" placeholder="Buscar curso...">
-                    <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
                 </div>
-                <!-- Dropdown de resultados -->
                 <div class="search-dropdown-results" id="searchResults"></div>
             </div>
 
-            <!-- Botones de Autenticación Exactos a tu imagen -->
-            <button class="btn-text-login" id="btnEntrar">Entrar</button>
-            <button class="btn-blue-register" id="btnRegistro">Registro</button>
-            <div class="theme-toggle" id="themeToggle" title="Cambiar Tema">🌙</div>
+            <div class="auth-buttons-group">
+                <button class="btn-text-login" id="btnEntrar">Entrar</button>
+                <button class="btn-blue-register" id="btnRegistro">Registro</button>
+                <div class="theme-toggle" id="themeToggle" title="Cambiar Tema">🌙</div>
+            </div>
         </div>
     </header>
 
     <!-- MODAL DE AUTENTICACIÓN -->
     <div class="admin-modal" id="authModal">
-        <div class="admin-modal-content" style="max-width: 380px;">
-            <button class="admin-modal-close" id="authModalClose">&times;</button>
+        <div class="admin-modal-content">
+            <button class="admin-modal-close" id="authModalClose" aria-label="Cerrar">&times;</button>
             <div class="admin-modal-logo">
                 <span class="play-icon">▶</span><span>WAGWAN</span>
             </div>
@@ -54,11 +66,11 @@
             
             <form id="authForm">
                 <div class="admin-form-group">
-                    <label>Usuario</label>
+                    <label for="authUsuario">Usuario</label>
                     <input type="text" id="authUsuario" placeholder="Tu nombre de usuario" required>
                 </div>
                 <div class="admin-form-group">
-                    <label>Contraseña</label>
+                    <label for="authPassword">Contraseña</label>
                     <input type="password" id="authPassword" placeholder="Tu contraseña secreta" required>
                 </div>
                 <p class="admin-login-error" id="authError"></p>
@@ -68,7 +80,7 @@
     </div>
 
     <!-- HERO BANNER (Carrusel Automático) -->
-    <section class="hero-banner" id="heroBannerContainer" style="transition: background-image 0.8s ease-in-out;">
+    <section class="hero-banner" id="heroBannerContainer">
         <!-- Se inyectará desde JavaScript -->
     </section>
 
@@ -76,9 +88,12 @@
     <div class="layout-container">
         
         <main class="main-content">
-            <!-- CATÁLOGO DE CURSOS (Sin Promos) -->
             <section class="section-block">
-                <h2>Cursos destacados</h2>
+                <div class="section-header-row">
+                    <h2>Cursos destacados</h2>
+                    <span class="catalog-subtitle">Explora clases actualizadas y material descargable</span>
+                </div>
+
                 <div class="movie-filters">
                     <button class="movie-filter active" data-category="Todas">Todos</button>
                     <button class="movie-filter" data-category="Programación">Programación</button>
@@ -86,6 +101,7 @@
                     <button class="movie-filter" data-category="Bases de Datos">Bases de Datos</button>
                     <button class="movie-filter" data-category="Redes">Redes de Comunicación</button>
                 </div>
+
                 <div class="grid-episodios" id="movies-container">
                     <!-- Tarjetas inyectadas por JS -->
                 </div>
@@ -94,7 +110,7 @@
 
         <!-- SIDEBAR: TOP ESTRENOS -->
         <aside class="sidebar">
-            <div class="sidebar-header">TOP CURSOS</div>
+            <div class="sidebar-header">🔥 TOP CURSOS</div>
             <div class="top-list" id="topEstrenosContainer">
                 <!-- Top inyectado por JS -->
             </div>
@@ -102,10 +118,29 @@
 
     </div>
 
-   <footer class="footer">
-       <!-- Tu footer aquí -->
-   </footer>
+    <!-- FOOTER MODERNO -->
+    <footer class="footer">
+        <div class="footer-bottom">
+            <div class="footer-brand">
+                <span class="play-icon">▶</span> <strong>WAGWAN</strong> — Plataforma de Cursos & Catálogo Interactivo
+            </div>
+            <p>&copy; 2026 WAGWAN. Todos los derechos reservados.</p>
+        </div>
+    </footer>
    
-   <script src="/public/js/index.js"></script>
+    <script src="/public/js/index.js"></script>
+    <script>
+        // Toggle menú móvil para pantallas pequeñas
+        const mobileBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinksMenu');
+        const userActions = document.getElementById('userActionsMenu');
+
+        if(mobileBtn) {
+            mobileBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('mobile-open');
+                userActions.classList.toggle('mobile-open');
+            });
+        }
+    </script>
 </body>
 </html>

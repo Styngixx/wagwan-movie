@@ -1,0 +1,49 @@
+name: CI & Docker Verification - Wawa Movie
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  verify-and-build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x, 22.x]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Check Syntax & Project Structure
+        run: |
+          echo "Verifying Node environment and entry files..."
+          node -v
+          npm list --depth=0
+
+      - name: Run Tests (if present)
+        run: npm test --if-present
+        env:
+          CI: true
+
+  docker-check:
+    needs: verify-and-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: docker build -t wawa-movie-app:test .
