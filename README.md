@@ -36,3 +36,6 @@ wagwan-movie/
     ├── js/
     ├── media/
     └── pages/
+## Integracion continua
+
+Este proyecto usa GitHub Actions (ci-sebastian.yml) para verificar el codigo en cada push.
