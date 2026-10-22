@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clase - WAGWAN</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/public/css/index.css">
+    <style>
+        .badge-reviewed { background: #d1fae5; color: #065f46; font-size: 11px; padding: 3px 8px; border-radius: 12px; font-weight: bold; }
+        .doc-viewer-card { background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border-light); overflow: hidden; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .doc-toolbar { background: var(--bg-secondary); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-light); }
+        .doc-iframe-box { position: relative; width: 100%; height: 600px; background: #525659; }
+        .doc-iframe-box iframe { width: 100%; height: 100%; border: none; }
+        .doc-footer-bar { padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); border-top: 1px solid var(--border-light); flex-wrap: wrap; gap: 10px; }
+    </style>
+</head>
+<body> 
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="logo" style="cursor:pointer;" onclick="window.location.href='/'">
+            <span class="play-icon">▶</span> WAGWAN
+        </div>
+        <nav class="nav-links">
+            <a href="/">Inicio</a>
+            <a href="/#movies-container" class="active">Cursos</a>
+            <a href="/#series">Rutas de Aprendizaje</a>
+            <a href="/public/pages/favoritos.html">Mis Clases Guardadas</a>
+        </nav>
+        <div class="user-actions">
+            <div class="theme-toggle" id="themeToggle" title="Cambiar Tema">🌙</div>
+        </div>
+    </header>
+
+    <!-- DETALLE DE LA CLASE -->
+    <main class="course-container">
+        <div class="course-header">
+            <h1 id="curso-titulo" class="course-title">Cargando contenido...</h1>
+            <div class="course-meta">
+                <span id="curso-genero">📚 Cargando...</span>
+                <span id="curso-anio">📅 Cargando...</span>
+            </div>
+        </div>
+
+        <!-- 1. BLOQUE DE RESUMEN (SINOPSIS) -->
+        <div class="course-summary">
+            <h3 style="margin-top:0; color:var(--text-main); margin-bottom: 10px; font-size: 1.2rem;">Resumen de la Sesión</h3>
+            <p id="curso-resumen" style="white-space: pre-line;">Cargando contenido explicativo...</p>
+        </div>
+
+        <!-- 2. VISOR DE DOCUMENTOS ESTILO CANVAS/UTP -->
+        <div id="document-wrapper" style="display: none;">
+            <div class="doc-viewer-card">
+                <div class="doc-toolbar">
+                    <div style="font-size: 13px; color: var(--text-main); font-weight: 500;">
+                        Material de Clase • Documento / Diapositivas • <span class="badge-reviewed">✔ Revisado</span>
+                    </div>
+                </div>
+                <div class="doc-iframe-box">
+                    <iframe id="curso-documento" src="" allowfullscreen></iframe>
+                </div>
+                <div class="doc-footer-bar">
+                    <div style="font-size: 12px; color: var(--text-muted);">
+                        Este material cuenta con 1 archivo online. Recuerda que puedes visualizarlo o descargarlo.
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <a id="btn-ver-linea" href="#" target="_blank" class="btn-primary" style="background: transparent; color: var(--accent-blue); border: 1px solid var(--accent-blue); padding: 6px 14px; font-size: 13px; border-radius: 6px;">↗ Ver en línea</a>
+                        <a id="btn-descargar-doc" href="#" target="_blank" class="btn-primary" style="padding: 6px 14px; font-size: 13px; border-radius: 6px;">📥 Descargar archivo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. VIDEO EXPLICATIVO (DEBAJO DEL DOCUMENTO) -->
+        <div style="margin-top: 30px;">
+            <h3 style="margin-bottom: 15px; color: var(--text-main); font-size: 1.2rem;">Clase en Video</h3>
+            <div class="video-container">
+                <iframe id="curso-video" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </main>
+
+    <script src="/public/js/detalle.js"></script>
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        if (localStorage.getItem('wagwanTheme') === 'dark') {
+            body.classList.add('dark-mode');
+            themeToggle.textContent = '☀️';
+        }
+        
+        themeToggle?.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            themeToggle.textContent = isDark ? '☀️' : '🌙';
+            localStorage.setItem('wagwanTheme', isDark ? 'dark' : 'light');
+        });
+    </script>
+</body>
+</html>
