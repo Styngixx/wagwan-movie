@@ -1,0 +1,31 @@
+name: CI - Sebastian
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verificacion:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Verificar que exista la página principal
+        run: test -f index.html || test -f public/index.html
+
+      - name: Instalar dependencias
+        if: hashFiles('package-lock.json') != ''
+        run: npm ci
+
+      - name: Validar sintaxis del backend
+        run: |
+          for f in server.js src/controllers/*.js src/routes/*.js; do
+            if [ -f "$f" ]; then node --check "$f"; fi
+          done
