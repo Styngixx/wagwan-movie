@@ -1,164 +1,233 @@
-# 🎬 WAGWAN Movie
+# WAGWAN — Plataforma de Cursos
 
-<div align="center">
+Aplicación web académica para explorar y administrar cursos y clases de desarrollo de software e ingeniería de sistemas. La interfaz incluye un catálogo con búsqueda y filtros, vistas de detalle y un panel administrativo para gestionar contenidos educativos.
 
-![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
-![Express](https://img.shields.io/badge/Express-5.x-000000?style=for-the-badge&logo=express&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-ES6-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![Supabase](https://img.shields.io/badge/Supabase-Storage%20%26%20DB-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
-![Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 
-</div>
+## Funcionalidades
 
-WAGWAN Movie es una plataforma web para explorar, consultar y gestionar un catálogo de películas. La aplicación combina una experiencia de usuario enfocada en contenido cinematográfico con un panel administrativo para administrar la colección, cargar imágenes y controlar el estado del contenido.
+- Explorar cursos por categorías como Programación, Algoritmos, Bases de Datos, Redes e Ingeniería de Software.
+- Buscar cursos y consultar su información de detalle.
+- Consultar clases guardadas desde la navegación de la aplicación.
+- Acceder al panel administrativo para crear, editar, eliminar y cambiar el estado de contenidos.
+- Cargar imágenes, documentos y enlaces a videos de clases.
+- Destacar contenidos mediante banners y una sección de cursos destacados.
 
-## Visión general
+La aplicación obtiene los contenidos desde Supabase. La disponibilidad de cada función depende de la configuración de Supabase, sus permisos y los datos cargados.
 
-El proyecto está diseñado para ofrecer:
+## Arquitectura
 
-- Un catálogo público con películas organizadas visualmente
-- Detalles de cada título con información relevante
-- Administración de contenido desde un panel interno
-- Manejo de portadas e imágenes mediante Supabase Storage
-- Gestión de autenticación para usuarios administradores
-- API REST para integración entre frontend y backend
+El proyecto utiliza una aplicación Node.js/Express que sirve los archivos estáticos del frontend y expone la API. El backend se conecta a Supabase para los datos y el almacenamiento de archivos.
 
-## Funcionalidades principales
+```mermaid
+flowchart LR
+    U[Estudiante o administrador] --> FE[Frontend: HTML, CSS y JavaScript]
+    FE --> APP[Servidor Node.js y Express]
+    APP --> API[API REST]
+    API --> DB[(Supabase Database)]
+    API --> ST[Supabase Storage]
+    FE --> V[Vercel: estáticos y rutas API]
+    APP --> K[Kubernetes en Docker Desktop]
+```
 
-- Catálogo de películas con navegación intuitiva
-- Vista individual de cada película
-- Panel administrativo con login
-- Creación, edición y eliminación lógica de registros
-- Cambio de estado de publicación
-- Gestión de contenidos destacados o en promoción
-- Carga de imágenes en almacenamiento remoto
-- Despliegue preparado para Vercel
+### Nomenclatura heredada
 
-## Stack tecnológico
+La temática de la interfaz es educativa, pero el backend todavía utiliza rutas como `/api/peliculas` y consulta una tabla llamada `peliculas`. El proyecto también conserva nombres de archivos y variables de una versión anterior. No renombres estos elementos de forma aislada: cualquier migración debe coordinar los cambios del frontend, backend, esquema/datos de Supabase y despliegues.
 
-- Node.js
-- Express
-- JavaScript
-- Supabase
-- HTML5
-- CSS3
-- Multer
-- dotenv
-- CORS
-- Vercel
+## Tecnologías
 
-## Estructura del proyecto
+- **Backend:** Node.js, CommonJS y Express `^5.2.1`.
+- **Frontend:** HTML, CSS y JavaScript.
+- **Datos y almacenamiento:** Supabase (`@supabase/supabase-js` `^2.116.0`).
+- **Carga de archivos:** Multer `^2.4.0`.
+- **Configuración local:** dotenv `^17.4.2`.
+- **Contenedor:** Node.js 22 sobre Alpine.
+- **Despliegue configurado:** Vercel.
+- **Orquestación local configurada:** Kubernetes con un Deployment y un Service NodePort.
+
+Las versiones de dependencias son los rangos del manifiesto `package.json`. El Dockerfile utiliza Node 22; los workflows de CI incluyen Node 18, 20 y 22.
+
+## Estructura principal
 
 ```text
-wagwan-movie/
+.
+├── .github/
+│   └── workflows/        # Workflows de GitHub Actions
 ├── public/
-│   ├── css/
-│   ├── data/
-│   ├── js/
-│   ├── media/
-│   └── pages/
+│   ├── css/              # Estilos
+│   ├── data/             # Datos JSON locales heredados
+│   ├── js/               # Lógica del frontend
+│   ├── media/            # Recursos gráficos
+│   └── pages/            # Vistas adicionales
 ├── src/
-│   ├── config/
-│   ├── controllers/
-│   └── routes/
+│   ├── config/           # Configuración de Supabase
+│   ├── controllers/      # Controladores
+│   └── routes/           # Rutas API
+├── Dockerfile
+├── docker-compose.yml
+├── k8s-deploy.yaml
 ├── package.json
+├── package-lock.json
 ├── server.js
-├── vercel.json
-├── README.md
-└── .env
+└── vercel.json
 ```
 
-## Requisitos previos
+## Requisitos
 
-Antes de ejecutar el proyecto, asegúrate de contar con:
+- Node.js 22 recomendado para usar la misma versión definida por el Dockerfile.
+- npm.
+- Un proyecto Supabase configurado con las tablas y políticas que utiliza la aplicación y un bucket de Storage llamado `media`.
 
-- Node.js 18 o superior
-- npm
-- Una cuenta en Supabase con:
-  - URL del proyecto
-  - clave del cliente o servicio
-  - bucket para almacenamiento de imágenes
-  - tablas `peliculas` y `usuarios`
+El código consulta las tablas `peliculas` y `usuarios`. La primera conserva el nombre de la versión anterior aunque la interfaz gestione cursos. El esquema SQL y las políticas de Supabase no están incluidos en este repositorio; deben verificarse en el proyecto Supabase utilizado por el equipo.
 
-## Instalación y ejecución
+## Instalación y ejecución local
 
-1. Clona el repositorio:
+1. Clonar el repositorio e instalar dependencias:
+
+   ```bash
+   git clone https://github.com/Styngixx/wagwan-movie.git
+   cd wagwan-movie
+   npm ci
+   ```
+
+2. Crear un archivo `.env` local en la raíz:
+
+   ```env
+   PORT=3600
+   SUPABASE_URL=https://tu-proyecto.supabase.co
+   SUPABASE_KEY=tu_clave_de_supabase
+   NODE_ENV=development
+   ```
+
+3. Iniciar el servidor:
+
+   ```bash
+   npm start
+   ```
+
+   Para desarrollo con reinicio automático:
+
+   ```bash
+   npm run dev
+   ```
+
+4. Abrir la aplicación en `http://localhost:3600`.
+
+No uses una clave `service_role` en el frontend ni la publiques en el repositorio. Usa las credenciales apropiadas para el entorno y configura correctamente las políticas de acceso de Supabase.
+
+## Rutas principales de la aplicación
+
+- `/` — página principal.
+- `/admin` — acceso a la vista administrativa.
+- `/detalle` — ruta de detalle servida por el servidor.
+- `/pages/...` — páginas estáticas del frontend.
+- `/api/...` — API REST.
+
+## API disponible
+
+Las rutas están montadas desde `src/routes/` por `server.js`. A pesar de que la interfaz habla de cursos, los endpoints actuales conservan el segmento `/peliculas`.
+
+| Método | Endpoint | Función |
+|---|---|---|
+| `GET` | `/api/peliculas` | Lista los contenidos desde Supabase. |
+| `POST` | `/api/peliculas` | Crea un contenido y puede recibir imagen/documento. |
+| `PUT` | `/api/peliculas/:id` | Actualiza un contenido y admite reemplazar archivos. |
+| `DELETE` | `/api/peliculas/:id` | Elimina el registro. |
+| `PATCH` | `/api/peliculas/:id/estado` | Cambia el estado del contenido. |
+| `PATCH` | `/api/peliculas/:id/vitrina` | Actualiza un campo de banner o destacado. |
+| `POST` | `/api/auth/login` | Inicia sesión de administrador. |
+
+Las cargas de archivos usan los campos `imagen` y `documento`; se guardan en el bucket `media`. El límite configurado para cada archivo es de 50 MB. El detalle se obtiene en el frontend a partir de la lista; no se encontró una ruta GET `/api/peliculas/:id` registrada en el router actual.
+
+La interfaz presenta una opción de registro, pero el router de autenticación encontrado solo registra `/login`. Verifica o implementa el endpoint de registro antes de presentar esa función como operativa.
+
+## GitHub Actions
+
+Los workflows se encuentran en `.github/workflows/`:
+
+- `ci-sebastian.yml`: verifica la página, revisa sintaxis del backend y ejecuta `npm ci` si hay lockfile.
+- `ci-francis.yml`: ejecuta validaciones con Node 20 y 22 y construye una imagen Docker de prueba.
+- `ci-david.yml`: instala dependencias con Node 18 en ramas seleccionadas.
+- `ci-aldo.yml`: ejecuta `docker compose build` en ramas seleccionadas.
+- `verificacion-mejiaCastro.yml`: instala dependencias con Node 20.
+
+Los workflows actuales no publican imágenes ni despliegan automáticamente. `package.json` no define un script `test`, por lo que `npm test --if-present` no ejecuta una suite cuando ese script no está configurado. No se encontró una convención de ramas o Pull Requests documentada; acuerda y documenta el flujo usado por el equipo.
+
+## Docker
+
+El Dockerfile utiliza `node:22-alpine`, instala dependencias, expone el puerto `3600` y ejecuta `npm start`. Docker Compose configura un servicio, publica `3600:3600` y carga variables desde `.env`.
 
 ```bash
-git clone https://github.com/Styngixx/wagwan-movie.git
-cd wagwan-movie
+# Construir y ejecutar con Docker
+docker build -t wagwan-movie:v1 .
+docker run --rm -p 3600:3600 --env-file .env wagwan-movie:v1
+
+# O utilizar Docker Compose
+docker compose build
+docker compose up
+docker compose down
 ```
 
-2. Instala las dependencias:
+Antes de crear una imagen para producción, añade un `.dockerignore` para excluir `node_modules`, `.env` y archivos locales. El Dockerfile usa `COPY . .`, por lo que el contexto de construcción debe protegerse.
 
-```bash
-npm install
+## Kubernetes con Docker Desktop
+
+`k8s-deploy.yaml` declara:
+
+- Un Deployment llamado `wagwan-movie-deployment`, con `replicas: 1`.
+- Un contenedor que escucha en el puerto `3600`.
+- Un Service `NodePort` que publica el puerto `30080` y dirige el tráfico al `3600`.
+- La imagen local `wagwan-movie:v1`.
+
+El manifiesto actual contiene valores de Supabase directamente en el YAML. **Antes de aplicarlo, sustituye esos literales por referencias a un Secret de Kubernetes.** No guardes credenciales privadas en manifiestos versionados.
+
+Con Kubernetes habilitado en Docker Desktop:
+
+```powershell
+docker build -t wagwan-movie:v1 .
+kubectl config get-contexts
+kubectl config use-context docker-desktop
 ```
 
-3. Crea un archivo `.env` en la raíz del proyecto:
+Después de crear el Secret y actualizar el Deployment para leerlo con `secretKeyRef`:
 
-```env
-PORT=3600
-SUPABASE_URL=https://tu-proyecto.supabase.co
-SUPABASE_KEY=tu_clave_supabase
-NODE_ENV=development
+```powershell
+kubectl apply -f k8s-deploy.yaml
+kubectl rollout status deployment/wagwan-movie-deployment
+kubectl get deployments,pods,svc
+kubectl port-forward svc/wagwan-movie-service 3600:3600
 ```
 
-4. Inicia la aplicación:
+Mientras el port-forward esté activo, abre `http://localhost:3600`. También puedes probar `http://localhost:30080`, según la configuración del clúster local. La presencia del YAML no confirma que el despliegue se haya ejecutado; verifica que el pod esté `Ready` y captura la salida de los comandos.
 
-```bash
-npm start
-```
+## Despliegue en Vercel
 
-5. En modo desarrollo:
+`vercel.json` configura `server.js` como función Node y `public/**/*` como contenido estático. Las rutas `/api/...` se dirigen al servidor y las demás rutas al frontend.
 
-```bash
-npm run dev
-```
+1. Importa el repositorio en Vercel o usa la CLI.
+2. Configura `SUPABASE_URL` y `SUPABASE_KEY` en las variables de entorno del proyecto.
+3. Despliega y prueba la página y la API.
+4. Registra aquí la URL cuando el despliegue esté confirmado: **[COMPLETAR: URL de producción]**.
 
-## URLs de la aplicación
+También se puede usar `npx vercel --prod` después de iniciar sesión y configurar las variables. El repositorio incluye configuración para Vercel, pero eso no demuestra que exista un deployment activo.
 
-Una vez levantado el servidor, podrás acceder a:
+## Seguridad y tareas de mantenimiento
 
-- Frontend: `http://localhost:3600`
-- API: `http://localhost:3600/api`
-- Administrador: `http://localhost:3600/admin`
+- **No publiques secretos.** El `.env` del checkout está rastreado por Git y `k8s-deploy.yaml` contiene configuración Supabase inline. `.gitignore` no deja de rastrear archivos que ya fueron añadidos al historial. Verifica las claves, elimina los valores sensibles del control de versiones y rota cualquier credencial privada que haya sido expuesta.
+- `public/data/admins.json` está bajo el directorio estático y contiene campos de usuario/contraseña. No almacenes credenciales ahí ni publiques el archivo con datos reales.
+- Se encontraron archivos de `node_modules/` rastreados en Git. Mantén las dependencias fuera del repositorio y conserva `package-lock.json`.
+- Añade `.dockerignore`, utiliza Secrets en Kubernetes y configura probes y límites de recursos antes de considerar el manifiesto listo para un entorno persistente.
+- Revisa los datos de `public/data/` y `public/media/`: algunos recursos conservan referencias de la temática anterior.
+- Actualiza la descripción y metadatos de `package.json`, que también conservan texto de la versión anterior.
 
-## API principal
+## Pruebas y estado
 
-### Películas
+No se encontró un script `test` en `package.json` ni evidencia de resultados de ejecución de GitHub Actions, Vercel o Kubernetes. Consulta las pestañas **Actions** y **Deployments** del repositorio/plataforma y añade aquí resultados comprobados antes de afirmar que el despliegue está operativo.
 
-- `GET /api/peliculas` — Obtiene todas las películas
-- `GET /api/peliculas/:id` — Obtiene una película por ID
-- `POST /api/peliculas` — Crea una nueva película
-- `PUT /api/peliculas/:id` — Actualiza una película
-- `PATCH /api/peliculas/:id/estado` — Cambia el estado de publicación
-- `PATCH /api/peliculas/:id/vitrina` — Actualiza datos de vitrina o destaque
+## Contribución y colaboración
 
-### Autenticación
+GitHub aloja el repositorio y los workflows de CI. La metodología de trabajo, herramientas de comunicación, tablero de actividades, roles, sprints y etiquetas de incidencias no están documentados aquí. Añade los procesos reales del equipo cuando hayan sido confirmados; no presentes como adoptada una estrategia sugerida.
 
-- `POST /api/auth/login` — Inicia sesión del administrador
+## Enlaces
 
-## Panel administrativo
-
-El panel permite:
-
-- Iniciar sesión con credenciales de administrador
-- Visualizar la colección actual
-- Registrar nuevas películas con imagen
-- Editar información existente
-- Cambiar el estado de contenido
-- Gestionar elementos destacados
-
-## Despliegue
-
-El proyecto incluye configuración para desplegarse en Vercel mediante `vercel.json`. Para producción, asegúrate de configurar correctamente las variables de entorno en la plataforma.
-
-## Consideraciones importantes
-
-- No guardar credenciales en el código fuente
-- Mantener `.env` fuera del repositorio
-- Verificar permisos y políticas de Supabase
-- Configurar el bucket de almacenamiento para imágenes correctamente
-
-
+- Repositorio: https://github.com/Styngixx/wagwan-movie
+- Incidencias: https://github.com/Styngixx/wagwan-movie/issues
