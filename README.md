@@ -29,10 +29,6 @@ flowchart LR
     APP --> K[Kubernetes en Docker Desktop]
 ```
 
-### Nomenclatura heredada
-
-La temática de la interfaz es educativa, pero el backend todavía utiliza rutas como `/api/peliculas` y consulta una tabla llamada `peliculas`. El proyecto también conserva nombres de archivos y variables de una versión anterior. No renombres estos elementos de forma aislada: cualquier migración debe coordinar los cambios del frontend, backend, esquema/datos de Supabase y despliegues.
-
 ## Tecnologías
 
 - **Backend:** Node.js, CommonJS y Express `^5.2.1`.
@@ -112,7 +108,6 @@ El código consulta las tablas `peliculas` y `usuarios`. La primera conserva el 
 
 4. Abrir la aplicación en `http://localhost:3600`.
 
-No uses una clave `service_role` en el frontend ni la publiques en el repositorio. Usa las credenciales apropiadas para el entorno y configura correctamente las políticas de acceso de Supabase.
 
 ## Rutas principales de la aplicación
 
@@ -136,9 +131,7 @@ Las rutas están montadas desde `src/routes/` por `server.js`. A pesar de que la
 | `PATCH` | `/api/peliculas/:id/vitrina` | Actualiza un campo de banner o destacado. |
 | `POST` | `/api/auth/login` | Inicia sesión de administrador. |
 
-Las cargas de archivos usan los campos `imagen` y `documento`; se guardan en el bucket `media`. El límite configurado para cada archivo es de 50 MB. El detalle se obtiene en el frontend a partir de la lista; no se encontró una ruta GET `/api/peliculas/:id` registrada en el router actual.
-
-La interfaz presenta una opción de registro, pero el router de autenticación encontrado solo registra `/login`. Verifica o implementa el endpoint de registro antes de presentar esa función como operativa.
+Las cargas de archivos usan los campos `imagen` y `documento`; se guardan en el bucket `media`. El límite configurado para cada archivo es de 50 MB. El detalle se obtiene en el frontend a partir de la lista.
 
 ## GitHub Actions
 
@@ -149,8 +142,6 @@ Los workflows se encuentran en `.github/workflows/`:
 - `ci-david.yml`: instala dependencias con Node 18 en ramas seleccionadas.
 - `ci-aldo.yml`: ejecuta `docker compose build` en ramas seleccionadas.
 - `verificacion-mejiaCastro.yml`: instala dependencias con Node 20.
-
-Los workflows actuales no publican imágenes ni despliegan automáticamente. `package.json` no define un script `test`, por lo que `npm test --if-present` no ejecuta una suite cuando ese script no está configurado. No se encontró una convención de ramas o Pull Requests documentada; acuerda y documenta el flujo usado por el equipo.
 
 ## Docker
 
@@ -167,8 +158,6 @@ docker compose up
 docker compose down
 ```
 
-Antes de crear una imagen para producción, añade un `.dockerignore` para excluir `node_modules`, `.env` y archivos locales. El Dockerfile usa `COPY . .`, por lo que el contexto de construcción debe protegerse.
-
 ## Kubernetes con Docker Desktop
 
 `k8s-deploy.yaml` declara:
@@ -178,7 +167,7 @@ Antes de crear una imagen para producción, añade un `.dockerignore` para exclu
 - Un Service `NodePort` que publica el puerto `30080` y dirige el tráfico al `3600`.
 - La imagen local `wagwan-movie:v1`.
 
-El manifiesto actual contiene valores de Supabase directamente en el YAML. **Antes de aplicarlo, sustituye esos literales por referencias a un Secret de Kubernetes.** No guardes credenciales privadas en manifiestos versionados.
+El manifiesto actual contiene valores de Supabase directamente en el YAML.
 
 Con Kubernetes habilitado en Docker Desktop:
 
@@ -209,25 +198,3 @@ Mientras el port-forward esté activo, abre `http://localhost:3600`. También pu
 4. Registra aquí la URL cuando el despliegue esté confirmado: **[COMPLETAR: URL de producción]**.
 
 También se puede usar `npx vercel --prod` después de iniciar sesión y configurar las variables. El repositorio incluye configuración para Vercel, pero eso no demuestra que exista un deployment activo.
-
-## Seguridad y tareas de mantenimiento
-
-- **No publiques secretos.** El `.env` del checkout está rastreado por Git y `k8s-deploy.yaml` contiene configuración Supabase inline. `.gitignore` no deja de rastrear archivos que ya fueron añadidos al historial. Verifica las claves, elimina los valores sensibles del control de versiones y rota cualquier credencial privada que haya sido expuesta.
-- `public/data/admins.json` está bajo el directorio estático y contiene campos de usuario/contraseña. No almacenes credenciales ahí ni publiques el archivo con datos reales.
-- Se encontraron archivos de `node_modules/` rastreados en Git. Mantén las dependencias fuera del repositorio y conserva `package-lock.json`.
-- Añade `.dockerignore`, utiliza Secrets en Kubernetes y configura probes y límites de recursos antes de considerar el manifiesto listo para un entorno persistente.
-- Revisa los datos de `public/data/` y `public/media/`: algunos recursos conservan referencias de la temática anterior.
-- Actualiza la descripción y metadatos de `package.json`, que también conservan texto de la versión anterior.
-
-## Pruebas y estado
-
-No se encontró un script `test` en `package.json` ni evidencia de resultados de ejecución de GitHub Actions, Vercel o Kubernetes. Consulta las pestañas **Actions** y **Deployments** del repositorio/plataforma y añade aquí resultados comprobados antes de afirmar que el despliegue está operativo.
-
-## Contribución y colaboración
-
-GitHub aloja el repositorio y los workflows de CI. La metodología de trabajo, herramientas de comunicación, tablero de actividades, roles, sprints y etiquetas de incidencias no están documentados aquí. Añade los procesos reales del equipo cuando hayan sido confirmados; no presentes como adoptada una estrategia sugerida.
-
-## Enlaces
-
-- Repositorio: https://github.com/Styngixx/wagwan-movie
-- Incidencias: https://github.com/Styngixx/wagwan-movie/issues
