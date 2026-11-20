@@ -33,13 +33,13 @@ app.get('/detalle', (req, res) => {
 
 // El catch-all siempre al final
 app.get(/.*/, (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.redirect('https://wagwan-moviex.vercel.app/');
 });
 
 module.exports = app;
 
 if (!process.env.VERCEL) {
     app.listen(PORT, () => {
-        console.log(`Servidor Wagwan corriendo en http://localhost:${PORT}`);
+        console.log(`🚀 Servidor Wagwan corriendo en http://localhost:${PORT}`);
     });
 }
