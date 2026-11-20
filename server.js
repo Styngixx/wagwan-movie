@@ -20,20 +20,13 @@ app.use('/api/auth', authRoutes);
 
 // 3. Archivos estáticos
 app.use('/public', express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'public')));
 
-// 4. Vistas frontend
-app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'pages', 'admin.html'));
-});
-
-app.get('/detalle', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'pages', 'detalle.html'));
-});
-
-// El catch-all siempre al final
+// 4. Redirigir vistas al Frontend en Angular cuando corre en Vercel
 app.get(/.*/, (req, res) => {
-    res.redirect('https://wagwan-moviex.vercel.app/');
+    if (process.env.VERCEL) {
+        return res.redirect('https://wagwan-moviex.vercel.app');
+    }
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 module.exports = app;
