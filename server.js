@@ -38,8 +38,8 @@ app.get(/.*/, (req, res) => {
 
 module.exports = app;
 
-if (process.env.NODE_ENV !== 'production') {
+if (!process.env.VERCEL) {
     app.listen(PORT, () => {
-        console.log(`🚀 Servidor Wagwan corriendo en http://localhost:${PORT}`);
+        console.log(`Servidor Wagwan corriendo en http://localhost:${PORT}`);
     });
 }
