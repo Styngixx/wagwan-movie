@@ -16,17 +16,16 @@ spec:
     spec:
       containers:
         - name: backend
-          image: wagwan-backend:latest
+          image: wagwan-backend:v2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3600
           env:
             - name: PORT
               value: "3600"
-            - name: SUPABASE_URL
-              value: "PEGA_AQUI_TU_SUPABASE_URL"
-            - name: SUPABASE_KEY
-              value: "PEGA_AQUI_TU_SUPABASE_KEY"
+          envFrom:
+            - secretRef:
+                name: wagwan-env
 ---
 apiVersion: v1
 kind: Service

@@ -19,6 +19,13 @@ const uploadCampos = upload.fields([
     { name: 'documento', maxCount: 1 }
 ]);
 
+// Valida que un campo de texto enviado por FormData tenga contenido real
+function tieneValorTexto(valor) {
+    if (valor === undefined || valor === null) return false;
+    const texto = String(valor).trim();
+    return texto !== '' && texto !== 'null' && texto !== 'undefined';
+}
+
 // === GET: OBTENER TODOS LOS CURSOS ===
 router.get('/peliculas', async (req, res) => {
     try {
@@ -73,14 +80,14 @@ router.post('/peliculas', uploadCampos, async (req, res) => {
         const { data, error } = await supabase
             .from('peliculas')
             .insert([{
-                titulo,
-                tipo: tipo || 'pelicula',
-                genero,
-                año_estreno: anio ? parseInt(anio, 10) : new Date().getFullYear(),
-                duracion: duracion ? parseInt(duracion, 10) : 0,
-                ranking: ranking ? parseInt(ranking, 10) : 10,
-                sinopsis: sinopsis || '',
-                url_yt: url_yt || null,
+                titulo: tieneValorTexto(titulo) ? String(titulo).trim() : 'Sin título',
+                tipo: tieneValorTexto(tipo) ? String(tipo).trim() : 'pelicula',
+                genero: tieneValorTexto(genero) ? String(genero).trim() : 'General',
+                año_estreno: tieneValorTexto(anio) && !Number.isNaN(parseInt(anio, 10)) ? parseInt(anio, 10) : new Date().getFullYear(),
+                duracion: tieneValorTexto(duracion) && !Number.isNaN(parseInt(duracion, 10)) ? parseInt(duracion, 10) : 0,
+                ranking: tieneValorTexto(ranking) && !Number.isNaN(parseInt(ranking, 10)) ? parseInt(ranking, 10) : 10,
+                sinopsis: tieneValorTexto(sinopsis) ? String(sinopsis).trim() : '',
+                url_yt: tieneValorTexto(url_yt) ? String(url_yt).trim() : null,
                 url_portada: url_portada || '',
                 url_documento: url_documento || null,
                 estado: 'Activo',
@@ -97,22 +104,30 @@ router.post('/peliculas', uploadCampos, async (req, res) => {
     }
 });
 
-// === PUT: EDITAR CLASE / CURSO ===
+// === PUT: EDITAR CLASE / CURSO (BLINDADO CONTRA CAMPOS VACÍOS) ===
 router.put('/peliculas/:id', uploadCampos, async (req, res) => {
     try {
         const { id } = req.params;
         const { titulo, tipo, genero, anio, duracion, ranking, sinopsis, url_yt } = req.body;
 
-        const updateData = {
-            titulo,
-            tipo,
-            genero,
-            año_estreno: anio ? parseInt(anio, 10) : undefined,
-            duracion: duracion ? parseInt(duracion, 10) : undefined,
-            ranking: ranking ? parseInt(ranking, 10) : undefined,
-            sinopsis: sinopsis || '',
-            url_yt: url_yt || null
-        };
+        const updateData = {};
+
+        // Solo actualiza los campos que realmente traen contenido nuevo
+        if (tieneValorTexto(titulo)) updateData.titulo = String(titulo).trim();
+        if (tieneValorTexto(tipo)) updateData.tipo = String(tipo).trim();
+        if (tieneValorTexto(genero)) updateData.genero = String(genero).trim();
+        if (tieneValorTexto(sinopsis)) updateData.sinopsis = String(sinopsis).trim();
+        if (tieneValorTexto(url_yt)) updateData.url_yt = String(url_yt).trim();
+
+        if (tieneValorTexto(anio) && !Number.isNaN(parseInt(anio, 10))) {
+            updateData.año_estreno = parseInt(anio, 10);
+        }
+        if (tieneValorTexto(duracion) && !Number.isNaN(parseInt(duracion, 10))) {
+            updateData.duracion = parseInt(duracion, 10);
+        }
+        if (tieneValorTexto(ranking) && !Number.isNaN(parseInt(ranking, 10))) {
+            updateData.ranking = parseInt(ranking, 10);
+        }
 
         // Si se subió un reemplazo de carátula
         if (req.files && req.files['imagen']) {
@@ -138,6 +153,17 @@ router.put('/peliculas/:id', uploadCampos, async (req, res) => {
 
             if (errDoc) throw errDoc;
             updateData.url_documento = supabase.storage.from('media').getPublicUrl(cleanDocName).data.publicUrl;
+        }
+
+        // Si no hubo cambios nuevos, devuelve el registro actual sin tocar la BD
+        if (Object.keys(updateData).length === 0) {
+            const { data: currentData, error: fetchError } = await supabase
+                .from('peliculas')
+                .select('*')
+                .eq('id', id);
+
+            if (fetchError) throw fetchError;
+            return res.json({ success: true, message: 'Curso actualizado con éxito', data: currentData });
         }
 
         const { data, error } = await supabase
@@ -193,6 +219,12 @@ router.patch('/peliculas/:id/vitrina', async (req, res) => {
     try {
         const { id } = req.params;
         const { campo, estado } = req.body;
+        const camposPermitidos = ['estado_banner', 'estado_top'];
+
+        if (!camposPermitidos.includes(campo)) {
+            return res.status(400).json({ error: 'Campo de vitrina no válido' });
+        }
+
         const { error } = await supabase
             .from('peliculas')
             .update({ [campo]: estado })
